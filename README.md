@@ -1,638 +1,638 @@
-## Panoramica del Progetto
+## Project Overview
 
 ---
 
-# Capturing Picasso’s Artistic Mind: Modellazione matematica dei processi cognitivi
+# Capturing Picasso’s Artistic Mind: Mathematical Modeling of Cognitive Processes
 
-## Descrizione
+## Description
 
-Questo progetto adotta un approccio computazionale per analizzare l'opera artistica di Pablo Picasso mediante l'estrazione di metriche visive, tecniche di clustering e analisi scientifica.
+This project adopts a computational approach to analyze Pablo Picasso's artistic work by extracting visual metrics, employing clustering techniques, and conducting scientific analysis.
 
-L'obiettivo è identificare pattern ricorrenti, strutture complesse e potenziali attrattori visivi nello spazio delle metriche.
+The goal is to identify recurring patterns, complex structures, and potential visual attractors within the metric space.
 
-## Obiettivi principali
+## Main Objectives
 
-- Pulizia e gestione dei dati
-- Calcolo di metriche visive
-- Clustering basato su queste metriche
-- Identificazione di attrattori tramite Mean-Shift
-- Visualizzazione ridotta con UMAP e t-SNE
-- Esplorazione dinamica tramite biforcazioni
+- Data cleaning and management
+- Calculation of visual metrics
+- Clustering based on these metrics
+- Identification of attractors using Mean-Shift
+- Reduced visualization with UMAP and t-SNE
+- Dynamic exploration through bifurcations
 
-## Metriche calcolate
+## Calculated Metrics
 
-1. **Dimensione frattale**
-2. **Entropia**
-3. **Misura di Birkhoff**
-4. **Distanza euclidea**
+1. **Fractal dimension**
+2. **Entropy**
+3. **Birkhoff measure**
+4. **Euclidean distance**
 
-## Fasi dell’analisi
+## Analysis Phases
 
-1. Conteggio delle opere (immagini scaricate + elementi nel JSON)  
-   *(Dataset: [link Google Drive](https://drive.google.com/drive/u/1/folders/1oBE6t9TOheAfzASu3EZP70e6tsHTNr3I))*
-2. Organizzazione per stile, secondo i metadati nel JSON
-3. Verifica e conteggio per ciascuna categoria stilistica
-4. Rimozione cartelle con meno di 10 opere (non significative)
-5. Nuovo conteggio delle opere post-cleaning
-6. Calcolo delle metriche visive
+1. Counting artworks (downloaded images + elements in JSON)
+   *(Dataset: [Google Drive link](https://drive.google.com/drive/u/1/folders/1oBE6t9TOheAfzASu3EZP70e6tsHTNr3I))*
+2. Organization by style, according to JSON metadata
+3. Verification and counting for each stylistic category
+4. Removal of folders with fewer than 10 artworks (not significant)
+5. New artwork count post-cleaning
+6. Calculation of visual metrics
 
-## Analisi effettuate
+## Analyses Performed
 
-- ANOVA e MANOVA
-- Clustering con Mean-Shift (bandwidth = 0.25 × mediana)
-- Distribuzione Kernel (univariata e bivariata)
+- ANOVA and MANOVA
+- Clustering with Mean-Shift (bandwidth = 0.25 × median)
+- Kernel Distribution (univariate and bivariate)
 - Contextual Fit
-- Misura di Hausdorff
-- Statistiche aggregate per cluster (medie per metrica)
-- Istogrammi comparativi
-- Riduzione dimensionale (UMAP e t-SNE)
-- Rilevamento di possibili attrattori visivi
-- Interazioni social delle opere di Picasso
+- Hausdorff Measure
+- Aggregate statistics per cluster (means per metric)
+- Comparative Histograms
+- Dimensionality Reduction (UMAP and t-SNE)
+- Detection of possible visual attractors
+- Social interactions of Picasso's artworks
 
-## Visualizzazioni incluse
+## Included Visualizations
 
-- Istogrammi per cluster e metrica
-- Dendrogramma
-- Wordcloud
-- Scatterplot 2D e 3D
-- Proiezioni 2D (UMAP e t-SNE)
-- Diagrammi di biforcazione (adattati al dominio visivo)
-
-
----
-
-## Sezione 1: Conteggio delle Opere e Dati Preliminari
-
-* **Scopo:** Stabilire il numero totale di opere d'arte e metadati disponibili per l'analisi.
-* **Input:** File immagine (`.jpg`, `.jpeg`, `.png`) da diverse sottocartelle e un file JSON contenente metadati (`pablo-picasso.json`).
-* **Metodi:** Scansione ricorsiva delle directory per il conteggio delle immagini; caricamento e ispezione del file JSON per il conteggio degli elementi.
-* **Output:** Numero totale di immagini contate nelle cartelle e numero di elementi/record nel file JSON.
-* **Insights:** Confermato un totale di 1170 opere d'arte (immagini). Il conteggio del file JSON indica la dimensione del dataset di metadati associato, essenziale per le analisi future.
-* **Visualizzazioni chiave:** Nessuna visualizzazione diretta, output numerici.
+- Histograms by cluster and metric
+- Dendrogram
+- Word cloud
+- 2D and 3D scatter plots
+- 2D projections (UMAP and t-SNE)
+- Bifurcation diagrams (adapted to the visual domain)
 
 ---
 
-## Sezione 2: Normalizzazione e Organizzazione dei Dati
+## Section 1: Artwork Counting and Preliminary Data
 
-* **Scopo:** Pulire e standardizzare i metadati delle opere, risolvendo problemi di omonimia e categorizzando le opere per periodo stilistico.
-* **Input:** File JSON con i metadati delle opere (`pablo-picasso.json`) e le directory contenenti le immagini delle opere.
-* **Metodi:**
-    * **Rinominazione "Untitled":** Scansione del JSON per opere con titolo "Untitled" e assegnazione di un suffisso numerico progressivo (es. "Untitled_1").
-    * **Organizzazione per Periodo:** Creazione di una nuova struttura di directory (`pablo-picasso-period`) dove le opere sono copiate in sottocartelle basate sul loro "periodo" stilistico. Vengono eliminate le opere senza un "period" definito.
-    * **Numerazione Titoli Duplicati:** Identificazione e rinominazione delle opere con titoli identici (ignorando la case) aggiungendo un suffisso numerico (es. "Les Demoiselles d'Avignon_1"). La prima occorrenza mantiene il titolo originale.
-* **Output:** File JSON aggiornato con titoli normalizzati; nuove directory di immagini organizzate per periodo stilistico.
-* **Insights:** La normalizzazione dei titoli "Untitled" e l'eliminazione dei record incompleti migliorano la coerenza del dataset. L'organizzazione per periodo facilita future analisi stilistiche e la navigazione del corpus di opere. La numerazione dei titoli duplicati assicura un'identificazione univoca di ciascuna opera.
-* **Visualizzazioni chiave:** Nessuna visualizzazione diretta; l'output è una struttura di file e un file JSON modificato.
+* **Purpose:** To establish the total number of available artworks and metadata for analysis.
+* **Input:** Image files (`.jpg`, `.jpeg`, `.png`) from various subfolders and a JSON file containing metadata (`pablo-picasso.json`).
+* **Methods:** Recursive directory scanning for image counting; loading and inspecting the JSON file for element counting.
+* **Output:** Total number of images counted in the folders and number of elements/records in the JSON file.
+* **Insights:** A total of 1170 artworks (images) confirmed. The JSON file count indicates the size of the associated metadata dataset, essential for future analyses.
+* **Key Visualizations:** No direct visualizations, numerical outputs.
 
 ---
 
-## Sezione 3: Verifica e Consolidamento delle Opere Organizzate
+## Section 2: Data Normalization and Organization
 
-* **Scopo:** Confermare l'esito delle operazioni di pulizia e organizzazione, ricontrollando il numero totale di opere dopo la categorizzazione per periodo.
-* **Input:** La nuova cartella organizzata per periodo (`.\\DATA\\pablo-picasso-period`) contenente le immagini delle opere.
-* **Metodi:** Scansione ricorsiva della directory `pablo-picasso-period` per contare il numero totale di file immagine presenti.
-* **Output:** Il conteggio finale delle opere organizzate per periodo.
-* **Insights:** Il conteggio finale di **1105 opere** conferma che le opere senza un "periodo" definito sono state rimosse e che il processo di organizzazione è stato eseguito correttamente. Questo dataset consolidato è ora pronto per le fasi successive di analisi.
-* **Visualizzazioni chiave:** Nessuna visualizzazione diretta; l'output è un conteggio numerico.
-
----
-
-## Sezione 4: Calcolo delle Metriche di Immagine
-
-* **Scopo:** Quantificare le caratteristiche visive di ciascuna opera attraverso metriche matematiche, preparandole per analisi stilistiche e comparative.
-* **Input:** Immagini delle opere d'arte organizzate per periodo (`.\\DATA\\pablo-picasso-period`).
-* **Metodi:** Per ogni immagine, convertita in scala di grigi, vengono calcolate le seguenti metriche:
-    * **Dimensione Frattale (Box-Counting):** Misura la complessità e la rugosità del contorno dell'immagine.
-    * **Entropia di Shannon:** Quantifica la quantità di informazione o la casualità della distribuzione dei pixel.
-    * **Misura di Birkhoff:** Calcolata come rapporto tra il perimetro totale e la radice quadrata dell'area totale di una forma binaria derivata dall'immagine. Indica la complessità del contorno rispetto alla dimensione dell'oggetto.
-    * **Norma Euclidea (Frobenius):** Misura la "grandezza" o l'intensità complessiva dell'immagine, normalizzata tra 0 e 1.
-* **Output:** Un file CSV (`.\\CSV\\metrics.csv`) contenente per ogni opera il periodo, il nome e i valori calcolati delle quattro metriche.
-* **Insights:** Queste metriche forniscono una rappresentazione numerica degli stili pittorici di Picasso. Ad esempio, una dimensione frattale elevata potrebbe indicare opere con dettagli complessi e forme irregolari (es. cubismo), mentre l'entropia potrebbe rivelare la variabilità tonale. La misura di Birkhoff e la Norma Euclidea offrono ulteriori angolazioni sulla complessità strutturale e l'intensità visiva delle composizioni. Questi dati quantitativi sono fondamentali per un'analisi oggettiva delle evoluzioni stilistiche.
-* **Visualizzazioni chiave:** Nessuna visualizzazione diretta in questa fase; l'output è un dataset tabellare.
+* **Purpose:** To clean and standardize artwork metadata, resolving homonymy issues and categorizing artworks by stylistic period.
+* **Input:** JSON file with artwork metadata (`pablo-picasso.json`) and directories containing artwork images.
+* **Methods:**
+    * **"Untitled" Renaming:** Scanning the JSON for artworks titled "Untitled" and assigning a progressive numeric suffix (e.g., "Untitled_1").
+    * **Organization by Period:** Creating a new directory structure (`pablo-picasso-period`) where artworks are copied into subfolders based on their stylistic "period." Artworks without a defined "period" are removed.
+    * **Duplicate Title Numbering:** Identifying and renaming artworks with identical titles (case-insensitive) by adding a numeric suffix (e.g., "Les Demoiselles d'Avignon_1"). The first occurrence retains its original title.
+* **Output:** Updated JSON file with normalized titles; new image directories organized by stylistic period.
+* **Insights:** Normalizing "Untitled" titles and removing incomplete records improve dataset consistency. Organization by period facilitates future stylistic analyses and corpus navigation. Numbering duplicate titles ensures unique identification for each artwork.
+* **Key Visualizations:** No direct visualizations; the output is a file structure and a modified JSON file.
 
 ---
 
-## Sezione 5: Integrazione e Pulizia dei Dati Aggiuntivi
+## Section 3: Verification and Consolidation of Organized Artworks
 
-* **Scopo:** Arricchire il dataset delle metriche con informazioni temporali e stilistiche e rimuovere eventuali record incompleti.
-* **Input:** File CSV con le metriche calcolate (`.\\CSV\\metrics.csv`) e il file JSON dei metadati originali (`.\\DATA\\pablo-picasso.json`).
-* **Metodi:**
-    * **Unione Dati:** Le colonne 'Year', 'Period' e 'Style' vengono estratte dal JSON e aggiunte al CSV, utilizzando il nome dell'opera come chiave di corrispondenza. Viene applicata una normalizzazione ai nomi delle opere per garantire un matching robusto (rimozione di caratteri speciali, conversione in minuscolo).
-    * **Gestione Valori Mancanti:** Tutte le righe del dataset risultante che presentano valori nulli nelle colonne 'Year', 'Period' o 'Style' vengono eliminate per garantire l'integrità dei dati per le analisi successive.
-* **Output:** Un nuovo file CSV (`.\\CSV\\metrics_with_details.csv`) contenente le metriche di immagine arricchite con l'anno di completamento, il periodo e lo stile di ciascuna opera, con tutte le righe incomplete rimosse.
-* **Insights:** L'aggiunta dell'anno e del periodo è cruciale per condurre analisi temporali sull'evoluzione dello stile di Picasso. La rimozione delle righe con valori nulli assicura che le analisi successive (es. modellazione predittiva o analisi statistiche) si basino su un dataset pulito e completo, migliorando l'affidabilità dei risultati.
-* **Visualizzazioni chiave:** Nessuna visualizzazione diretta; l'output è un dataset tabellare aggiornato.
+* **Purpose:** To confirm the outcome of cleaning and organization operations, re-checking the total number of artworks after categorization by period.
+* **Input:** The new period-organized folder (`.\\DATA\\pablo-picasso-period`) containing artwork images.
+* **Methods:** Recursive scanning of the `pablo-picasso-period` directory to count the total number of image files present.
+* **Output:** The final count of artworks organized by period.
+* **Insights:** The final count of **1105 artworks** confirms that artworks without a defined "period" have been removed and that the organization process was correctly executed. This consolidated dataset is now ready for subsequent analysis phases.
+* **Key Visualizations:** No direct visualizations; the output is a numerical count.
 
 ---
 
-## Sezione 6: Rimozione degli Outlier e Conteggio Post-Pulizia
+## Section 4: Image Metric Calculation
 
-* **Scopo:** Identificare ed eliminare i valori anomali (outlier) dalle metriche calcolate, garantendo che le analisi successive si basino su dati robusti e rappresentativi. Successivamente, viene effettuato un riconteggio delle opere per confermare il dataset finale.
-* **Input:** Il file CSV contenente le metriche delle opere e i dettagli (`.\\CSV\\metrics_with_details.csv`).
-* **Metodi:**
-    * **Caricamento e Preparazione:** Il CSV viene caricato, e le colonne numeriche (`Fractal dimension`, `Entropy`, `Birkhoff measure`, `Euclidean norm`) vengono convertite nel tipo numerico, gestendo eventuali errori di conversione e rimuovendo le righe con valori NaN in queste colonne.
-    * **Rimozione Outlier IQR:** Per ciascun "Periodo" stilistico e per ogni metrica numerica, vengono calcolati il Primo Quartile (Q1), il Terzo Quartile (Q3) e il Rango Interquartile (IQR). Le opere i cui valori ricadono al di fuori dell'intervallo $[Q1 - 1.5 \times IQR, Q3 + 1.5 \times IQR]$ vengono considerate outlier e rimosse. Questo processo è iterativo e può essere ripetuto fino a quando non ci sono più outlier visibili.
-    * **Visualizzazione Outlier:** Vengono generati boxplot per ciascuna metrica, raggruppati per periodo, per visualizzare la distribuzione dei dati e l'efficacia della rimozione degli outlier. Questi grafici vengono salvati nella directory `.\\PLOT\\BOXPLOT\\`.
-    * **Conteggio Finale:** Dopo la rimozione degli outlier, viene ricalcolato il numero totale di opere e il conteggio delle opere per ciascun periodo stilistico.
-* **Output:** Un nuovo file CSV (`.\\CSV\\metrics_with_details_no_outlier.csv`) contenente il dataset ripulito dagli outlier. Vengono prodotte diverse visualizzazioni (boxplot) che mostrano la distribuzione delle metriche per periodo, senza outlier. Viene inoltre fornito un riepilogo del conteggio delle opere per ciascun periodo dopo la pulizia.
-* **Insights:** La rimozione degli outlier è fondamentale per prevenire che valori estremi distorcano le analisi statistiche e i modelli predittivi. Il conteggio post-pulizia indica che il dataset finale comprende **852 opere**, con una distribuzione per periodo che ora riflette più accuratamente il corpus centrale delle opere di Picasso dopo l'eliminazione dei dati anomali. Le visualizzazioni dei boxplot confermano che i dati sono ora più concentrati e pronti per analisi comparative significative tra i diversi periodi.
-* **Visualizzazioni chiave:** Boxplot di "Fractal dimension", "Entropy", "Birkhoff measure" e "Euclidean norm" raggruppati per "Periodo", mostrando le distribuzioni dopo la rimozione degli outlier.
-
----
-
-## Sezione 7: Normalizzazione delle Metriche
-
-* **Scopo:** Portare tutte le metriche calcolate su una scala comune (tra 0 e 1) per eliminare le differenze di magnitudine tra di esse, rendendole comparabili e adatte per algoritmi che sono sensibili alla scala dei dati (es. molti algoritmi di machine learning).
-* **Input:** Il file CSV delle metriche pulito dagli outlier (`.\\CSV\\metrics_with_details_no_outlier.csv`).
-* **Metodi:**
-    * **Caricamento Dati:** Il dataset viene caricato.
-    * **Controllo e Pulizia:** Le colonne delle metriche ("Fractal dimension", "Entropy", "Birkhoff measure", "Euclidean distance") vengono esplicitamente convertite in tipo numerico. Eventuali valori non numerici (risultanti da errori o conversioni precedenti) vengono trasformati in `NaN` e le righe contenenti questi `NaN` vengono rimosse dal dataset.
-    * **Normalizzazione Min-Max:** Viene applicato l'algoritmo **MinMaxScaler** di Scikit-learn, che scala i valori di ogni metrica in modo che il valore minimo diventi 0 e il valore massimo diventi 1, mantenendo le relazioni relative tra i dati.
-* **Output:** Un nuovo file CSV (`.\\CSV NORMALIZED\\normalized_metrics_with_details_no_outlier.csv`) dove tutte le colonne delle metriche sono state normalizzate nell'intervallo [0, 1].
-* **Insights:** La normalizzazione è un passo cruciale di pre-elaborazione che migliora le prestazioni di molti algoritmi analitici e di machine learning, garantendo che nessuna metrica domini l'analisi a causa della sua scala intrinseca. Questo rende i dati pronti per compiti come il clustering, la classificazione o l'analisi di regressione, dove la comparabilità tra feature è fondamentale.
-* **Visualizzazioni chiave:** Nessuna visualizzazione diretta; l'output è un dataset tabellare con valori scalati.
+* **Purpose:** To quantify the visual characteristics of each artwork using mathematical metrics, preparing them for stylistic and comparative analyses.
+* **Input:** Artworks images organized by period (`.\\DATA\\pablo-picasso-period`).
+* **Methods:** For each image, converted to grayscale, the following metrics are calculated:
+    * **Fractal Dimension (Box-Counting):** Measures the complexity and roughness of the image's contour.
+    * **Shannon Entropy:** Quantifies the amount of information or randomness of pixel distribution.
+    * **Birkhoff Measure:** Calculated as the ratio of the total perimeter to the square root of the total area of a binary shape derived from the image. It indicates contour complexity relative to object size.
+    * **Euclidean Norm (Frobenius):** Measures the "magnitude" or overall intensity of the image, normalized between 0 and 1.
+* **Output:** A CSV file (`.\\CSV\\metrics.csv`) containing for each artwork its period, name, and the calculated values of the four metrics.
+* **Insights:** These metrics provide a numerical representation of Picasso's painting styles. For example, a high fractal dimension might indicate artworks with complex details and irregular shapes (e.g., cubism), while entropy could reveal tonal variability. The Birkhoff measure and Euclidean Norm offer further angles on structural complexity and visual intensity of compositions. These quantitative data are fundamental for an objective analysis of stylistic evolutions.
+* **Key Visualizations:** No direct visualizations at this stage; the output is a tabular dataset.
 
 ---
 
-## Sezione 8: Analisi Statistica Normalizzata per Periodo
+## Section 5: Integration and Cleaning of Additional Data
 
-* **Scopo:** Esaminare le differenze statistiche nelle metriche normalizzate tra i diversi periodi artistici di Picasso, identificando quali metriche mostrano variazioni significative nel tempo e tra periodi consecutivi.
-* **Input:** Il file CSV con le metriche normalizzate e i dettagli delle opere (`.\\CSV NORMALIZED\\normalized_metrics_with_details_no_outlier.csv`).
-* **Metodi:**
-    * **Calcolo di Media e Deviazione Standard:** Per ciascun periodo ("Early Years", "Blue Period", "Rose Period", "African Period", "Cubist Period", "Neoclassicist & Surrealist Period", "Later Years"), vengono calcolate la media e la deviazione standard per ciascuna delle quattro metriche ("Fractal dimension", "Entropy", "Birkhoff measure", "Euclidean distance"). I risultati vengono salvati in un CSV (`.\\CSV NORMALIZED\\normalized_metrics_by_period.csv`).
-    * **Analisi MANOVA (Multivariate Analysis of Variance):** Viene eseguita una MANOVA per confrontare simultaneamente le medie di tutte le metriche tra coppie di periodi consecutivi cronologicamente. La MANOVA determina se esistono differenze statisticamente significative tra i gruppi quando si considerano più variabili dipendenti insieme.
-    * **Analisi ANOVA (Analysis of Variance) Univariata (post-hoc):** Se la MANOVA indica una differenza significativa (p-value < 0.05), viene condotta un'ANOVA univariata per ciascuna metrica individualmente, sempre tra le coppie di periodi consecutivi. Questo aiuta a identificare quali specifiche metriche contribuiscono alla significatività complessiva riscontrata con la MANOVA.
-    * **Visualizzazione dei Trend:** Vengono creati dei grafici a linee che mostrano il trend delle medie di ciascuna metrica attraverso i periodi cronologicamente ordinati. Questi grafici vengono salvati come immagini PNG nella cartella `.\\PLOT NORMALIZED\\TREND\\`.
+* **Purpose:** To enrich the metrics dataset with temporal and stylistic information and remove any incomplete records.
+* **Input:** CSV file with calculated metrics (`.\\CSV\\metrics.csv`) and the original metadata JSON file (`.\\DATA\\pablo-picasso.json`).
+* **Methods:**
+    * **Data Merging:** The 'Year', 'Period', and 'Style' columns are extracted from the JSON and added to the CSV, using the artwork name as the matching key. Normalization is applied to artwork names to ensure robust matching (removal of special characters, conversion to lowercase).
+    * **Missing Value Handling:** All rows in the resulting dataset with null values in the 'Year', 'Period', or 'Style' columns are removed to ensure data integrity for subsequent analyses.
+* **Output:** A new CSV file (`.\\CSV\\metrics_with_details.csv`) containing the image metrics enriched with the completion year, period, and style of each artwork, with all incomplete rows removed.
+* **Insights:** Adding the year and period is crucial for conducting temporal analyses of Picasso's style evolution. Removing rows with null values ensures that subsequent analyses (e.g., predictive modeling or statistical analyses) are based on a clean and complete dataset, improving result reliability.
+* **Key Visualizations:** No direct visualizations; the output is an updated tabular dataset.
+
+---
+
+## Section 6: Outlier Removal and Post-Cleaning Count
+
+* **Purpose:** To identify and eliminate anomalous values (outliers) from the calculated metrics, ensuring that subsequent analyses are based on robust and representative data. Subsequently, artworks are recounted to confirm the final dataset.
+* **Input:** The CSV file containing artwork metrics and details (`.\\CSV\\metrics_with_details.csv`).
+* **Methods:**
+    * **Data Loading and Preparation:** The CSV is loaded, and numerical columns (`Fractal dimension`, `Entropy`, `Birkhoff measure`, `Euclidean norm`) are converted to numeric type, handling any conversion errors and removing rows with NaN values in these columns.
+    * **IQR Outlier Removal:** For each stylistic "Period" and for each numerical metric, the First Quartile (Q1), Third Quartile (Q3), and Interquartile Range (IQR) are calculated. Artworks whose values fall outside the range $[Q1 - 1.5 \times IQR, Q3 + 1.5 \times IQR]$ are considered outliers and removed. This process is iterative and can be repeated until no more visible outliers exist.
+    * **Outlier Visualization:** Box plots are generated for each metric, grouped by period, to visualize data distribution and outlier removal effectiveness. These plots are saved in the `.\\PLOT\\BOXPLOT\\` directory.
+    * **Final Count:** After outlier removal, the total number of artworks and the count of artworks for each stylistic period are recalculated.
+* **Output:** A new CSV file (`.\\CSV\\metrics_with_details_no_outlier.csv`) containing the outlier-cleaned dataset. Several visualizations (box plots) are produced showing the distribution of metrics by period, without outliers. A summary of artwork counts for each period after cleaning is also provided.
+* **Insights:** Outlier removal is fundamental to prevent extreme values from distorting statistical analyses and predictive models. The post-cleaning count indicates that the final dataset comprises **852 artworks**, with a distribution by period that now more accurately reflects the central corpus of Picasso's works after anomalous data removal. Box plot visualizations confirm that the data is now more concentrated and ready for meaningful comparative analyses between different periods.
+* **Key Visualizations:** Box plots of "Fractal dimension," "Entropy," "Birkhoff measure," and "Euclidean norm" grouped by "Period," showing distributions after outlier removal.
+
+---
+
+## Section 7: Metric Normalization
+
+* **Purpose:** To bring all calculated metrics to a common scale (between 0 and 1) to eliminate differences in magnitude between them, making them comparable and suitable for algorithms sensitive to data scale (e.g., many machine learning algorithms).
+* **Input:** The outlier-cleaned metric CSV file (`.\\CSV\\metrics_with_details_no_outlier.csv`).
+* **Methods:**
+    * **Data Loading:** The dataset is loaded.
+    * **Checking and Cleaning:** Metric columns ("Fractal dimension", "Entropy", "Birkhoff measure", "Euclidean distance") are explicitly converted to numeric type. Any non-numeric values (resulting from errors or previous conversions) are transformed to `NaN`, and rows containing these `NaN`s are removed from the dataset.
+    * **Min-Max Normalization:** Scikit-learn's **MinMaxScaler** algorithm is applied, scaling each metric's values so that the minimum value becomes 0 and the maximum value becomes 1, while preserving relative relationships between data.
+* **Output:** A new CSV file (`.\\CSV NORMALIZED\\normalized_metrics_with_details_no_outlier.csv`) where all metric columns have been normalized to the [0, 1] range.
+* **Insights:** Normalization is a crucial pre-processing step that improves the performance of many analytical and machine learning algorithms, ensuring that no metric dominates the analysis due to its intrinsic scale. This makes the data ready for tasks such as clustering, classification, or regression analysis, where comparability between features is fundamental.
+* **Key Visualizations:** No direct visualizations; the output is a tabular dataset with scaled values.
+
+---
+
+## Section 8: Normalized Statistical Analysis by Period
+
+* **Purpose:** To examine statistical differences in normalized metrics among Picasso's different artistic periods, identifying which metrics show significant variations over time and between consecutive periods.
+* **Input:** The CSV file with normalized metrics and artwork details (`.\\CSV NORMALIZED\\normalized_metrics_with_details_no_outlier.csv`).
+* **Methods:**
+    * **Calculation of Mean and Standard Deviation:** For each period ("Early Years", "Blue Period", "Rose Period", "African Period", "Cubist Period", "Neoclassicist & Surrealist Period", "Later Years"), the mean and standard deviation are calculated for each of the four metrics ("Fractal dimension", "Entropy", "Birkhoff measure", "Euclidean distance"). Results are saved in a CSV (`.\\CSV NORMALIZED\\normalized_metrics_by_period.csv`).
+    * **MANOVA (Multivariate Analysis of Variance):** A MANOVA is performed to simultaneously compare the means of all metrics between chronologically consecutive pairs of periods. MANOVA determines if statistically significant differences exist between groups when considering multiple dependent variables together.
+    * **Univariate ANOVA (post-hoc) Analysis:** If MANOVA indicates a significant difference (p-value < 0.05), a univariate ANOVA is conducted for each metric individually, again between consecutive period pairs. This helps identify which specific metrics contribute to the overall significance found with MANOVA.
+    * **Trend Visualization:** Line graphs are created showing the trend of each metric's mean across chronologically ordered periods. These graphs are saved as PNG images in the `.\\PLOT NORMALIZED\\TREND\\` folder.
 * **Output:**
-    * Un file CSV (`.\\CSV NORMALIZED\\normalized_metrics_by_period.csv`) con le medie e le deviazioni standard delle metriche per ogni periodo.
-    * Un file CSV (`.\\CSV NORMALIZED\\normalized_manova_analysis_by_period.csv`) che riassume i p-value della MANOVA per ogni coppia di periodi consecutivi e indica quali metriche sono risultate significativamente diverse nell'ANOVA univariata.
-    * Immagini PNG (`.\\PLOT NORMALIZED\\TREND\\normalized_metrics_trend.png`) che mostrano i trend delle metriche nel tempo.
-* **Insights:** L'analisi statistica rivelerà se e come le caratteristiche visive delle opere di Picasso (misurate dalle metriche) sono cambiate significativamente da un periodo all'altro. I grafici dei trend visualizzeranno queste evoluzioni. La MANOVA e le successive ANOVA forniranno una base statistica per affermare che le transizioni tra i periodi non sono solo nominali ma si riflettono in cambiamenti quantificabili nello stile visivo delle opere. Questo passaggio è cruciale per comprendere l'evoluzione artistica di Picasso da una prospettiva basata sui dati.
+    * A CSV file (`.\\CSV NORMALIZED\\normalized_metrics_by_period.csv`) with the means and standard deviations of metrics for each period.
+    * A CSV file (`.\\CSV NORMALIZED\\normalized_manova_analysis_by_period.csv`) summarizing MANOVA p-values for each pair of consecutive periods and indicating which metrics were significantly different in the univariate ANOVA.
+    * PNG images (`.\\PLOT NORMALIZED\\TREND\\normalized_metrics_trend.png`) showing metric trends over time.
+* **Insights:** Statistical analysis will reveal if and how the visual characteristics of Picasso's works (measured by metrics) significantly changed from one period to another. Trend graphs will visualize these evolutions. MANOVA and subsequent ANOVAs will provide a statistical basis for asserting that transitions between periods are not just nominal but reflect quantifiable changes in the visual style of the works. This step is crucial for understanding Picasso's artistic evolution from a data-driven perspective.
 
 ---
 
-## Sezione 8.1: Analisi Statistica con Rispetto al Periodo (Dati Normalizzati)
+## Section 8.1: Statistical Analysis with Respect to Period (Normalized Data)
 
-* **Scopo:** Approfondire l'analisi delle metriche estratte dalle opere di Picasso, concentrandosi sulle differenze statistiche tra i vari periodi artistici, utilizzando i dati **normalizzati** ottenuti nel passaggio precedente. L'obiettivo è quantificare e visualizzare l'evoluzione dello stile di Picasso attraverso le fasi della sua carriera.
-* **Input:** Il file CSV contenente le metriche normalizzate e i dettagli delle opere (`.\\CSV NORMALIZED\\normalized_metrics_with_details_no_outlier.csv`).
-* **Metodi:**
-    * **Calcolo di Media e Deviazione Standard per Periodo:** Per ciascun periodo artistico definito ("Early Years", "Blue Period", "Rose Period", "African Period", "Cubist Period", "Neoclassicist & Surrealist Period", "Later Years"), vengono calcolate la media e la deviazione standard per ciascuna delle quattro metriche ("Fractal dimension", "Entropy", "Birkhoff measure", "Euclidean distance"). Questo fornisce una prima panoramica delle tendenze centrali e della dispersione delle metriche all'interno di ogni fase. I risultati vengono salvati in un CSV (`.\\CSV NORMALIZED\\normalized_metrics_by_period.csv`).
-    * **Analisi MANOVA (Multivariate Analysis of Variance):** Viene condotta un'analisi MANOVA per confrontare simultaneamente le medie di tutte le metriche tra coppie di periodi consecutivi nella cronologia artistica di Picasso. La MANOVA è utilizzata per determinare se ci sono differenze statisticamente significative tra i gruppi (periodi) quando si considerano più variabili dipendenti (le metriche) contemporaneamente. Questo aiuta a capire se l'evoluzione tra un periodo e l'altro ha un impatto collettivo sulle caratteristiche delle opere.
-    * **Analisi ANOVA (Analysis of Variance) Univariata (Post-Hoc):** Se la MANOVA rivela una differenza complessiva significativa tra due periodi consecutivi (p-value < 0.05), vengono eseguite delle analisi ANOVA univariate per ciascuna metrica individualmente. Questo passaggio post-hoc serve a identificare quali specifiche metriche contribuiscono maggiormente alla significatività complessiva osservata dalla MANOVA, indicando quali aspetti dello stile di Picasso sono cambiati in modo più marcato tra i periodi.
-    * **Visualizzazione dei Trend delle Medie:** Vengono generati grafici a linee che illustrano l'andamento delle medie di ciascuna metrica attraverso i periodi artistici, ordinati cronologicamente. Queste visualizzazioni permettono di cogliere immediatamente le variazioni e le evoluzioni stilistiche di Picasso nel corso del tempo, rendendo evidenti i cambiamenti quantificabili nelle proprietà delle sue opere.
+* **Purpose:** To deepen the analysis of metrics extracted from Picasso's works, focusing on statistical differences among various artistic periods, using the **normalized** data obtained in the previous step. The goal is to quantify and visualize the evolution of Picasso's style throughout his career phases.
+* **Input:** The CSV file containing normalized metrics and artwork details (`.\\CSV NORMALIZED\\normalized_metrics_with_details_no_outlier.csv`).
+* **Methods:**
+    * **Calculation of Mean and Standard Deviation by Period:** For each defined artistic period ("Early Years", "Blue Period", "Rose Period", "African Period", "Cubist Period", "Neoclassicist & Surrealist Period", "Later Years"), the mean and standard deviation are calculated for each of the four metrics ("Fractal dimension", "Entropy", "Birkhoff measure", "Euclidean distance"). This provides an initial overview of central tendencies and metric dispersion within each phase. Results are saved in a CSV (`.\\CSV NORMALIZED\\normalized_metrics_by_period.csv`).
+    * **MANOVA (Multivariate Analysis of Variance):** A MANOVA is conducted to simultaneously compare the means of all metrics between chronologically consecutive pairs of periods in Picasso's artistic timeline. MANOVA is used to determine if there are statistically significant differences between groups (periods) when considering multiple dependent variables (metrics) simultaneously. This helps understand if the evolution between periods has a collective impact on artwork characteristics.
+    * **Univariate ANOVA (Post-Hoc) Analysis:** If MANOVA reveals an overall significant difference between two consecutive periods (p-value < 0.05), univariate ANOVA analyses are performed for each metric individually. This post-hoc step serves to identify which specific metrics contribute most to the overall significance observed by MANOVA, indicating which aspects of Picasso's style changed most markedly between periods.
+    * **Visualization of Mean Trends:** Line graphs are generated illustrating the trend of each metric's mean across artistic periods, ordered chronologically. These visualizations allow for immediate understanding of Picasso's stylistic variations and evolutions over time, making quantifiable changes in his works' properties evident.
 * **Output:**
-    * Un file CSV (`.\\CSV NORMALIZED\\normalized_metrics_by_period.csv`) contenente le medie e le deviazioni standard delle metriche per ogni periodo artistico.
-    * Un file CSV (`.\\CSV NORMALIZED\\normalized_manova_analysis_by_period.csv`) che riassume i p-value della MANOVA per ogni coppia di periodi consecutivi e indica quali metriche sono risultate significativamente diverse nell'ANOVA univariata.
-    * Immagini PNG (`.\\PLOT NORMALIZED\\TREND\\normalized_metrics_trend.png`) che mostrano i trend delle metriche nel tempo.
-* **Insights:** Questa fase di analisi statistica è **fondamentale** per convalidare in modo quantitativo le transizioni tra i periodi artistici di Picasso. I risultati indicheranno non solo se ci sono state differenze significative nello stile, ma anche quali specifiche metriche (e quindi quali proprietà visive) sono state le più influenti in tali cambiamenti. I grafici dei trend forniranno una rappresentazione intuitiva di queste evoluzioni, completando l'analisi numerica con un contesto visivo.
+    * A CSV file (`.\\CSV NORMALIZED\\normalized_metrics_by_period.csv`) containing the means and standard deviations of metrics for each artistic period.
+    * A CSV file (`.\\CSV NORMALIZED\\normalized_manova_analysis_by_period.csv`) summarizing MANOVA p-values for each pair of consecutive periods and indicating which metrics were significantly different in the univariate ANOVA.
+    * PNG images (`.\\PLOT NORMALIZED\\TREND\\normalized_metrics_trend.png`) showing metric trends over time.
+* **Insights:** This phase of statistical analysis is **fundamental** for quantitatively validating the transitions between Picasso's artistic periods. Results will indicate not only if there were significant differences in style, but also which specific metrics (and thus which visual properties) were most influential in these changes. Trend graphs will provide an intuitive representation of these evolutions, complementing numerical analysis with visual context.
 
 ---
 
-## Sezione 8.2: Analisi del Cambiamento Medio nelle Metriche
+## Section 8.2: Analysis of Mean Change in Metrics
 
-* **Scopo:** Quantificare l'entità dei cambiamenti nelle metriche visive delle opere di Picasso tra periodi artistici consecutivi, fornendo una misura diretta dell'evoluzione stilistica.
-* **Input:** Il file CSV contenente le medie delle metriche per ogni periodo (`.\\CSV\\metrics_by_period.csv`).
-* **Metodi:**
-    * **Caricamento e Preparazione Dati:** Il dataset delle medie per periodo viene caricato. Le colonne numeriche vengono convertite in formato float, gestendo la virgola come separatore decimale.
-    * **Ordinamento Cronologico:** I periodi artistici di Picasso vengono ordinati cronologicamente ("Early Years", "Blue Period", "Rose Period", "African Period", "Cubist Period", "Neoclassicist & Surrealist Period", "Later Years").
-    * **Calcolo delle Differenze Consecutive:** Per ogni metrica (Dimensione Frattale, Entropia, Misura di Birkhoff, Norma Euclidea), viene calcolata la differenza tra la media del periodo successivo e la media del periodo corrente. Questo evidenzia l'incremento o il decremento di ciascuna caratteristica visiva nel passaggio da una fase artistica all'altra.
-* **Output:** Un nuovo file CSV (`.\\CSV\\metric_variations_by_period.csv`) che elenca ogni metrica, la transizione tra i periodi (es. "Early Years to Blue Period") e il valore della differenza media riscontrata.
-* **Insights:** Questa analisi fornisce una **misura diretta e quantificabile** dell'evoluzione stilistica di Picasso. Ad esempio, una differenza positiva significativa nella "Dimensione Frattale" tra il Periodo Blu e il Cubismo indicherebbe un aumento della complessità e della frammentazione delle forme. Questi dati sono essenziali per comprendere non solo *se* lo stile è cambiato, ma anche *come* e *in che misura* ciascuna caratteristica visiva è mutata nel corso della sua carriera.
-* **Visualizzazioni chiave:** Nessuna visualizzazione diretta in questa fase; l'output è un dataset tabellare che quantifica i cambiamenti.
+* **Purpose:** To quantify the magnitude of changes in Picasso's visual artwork metrics between consecutive artistic periods, providing a direct measure of stylistic evolution.
+* **Input:** The CSV file containing the means of metrics for each period (`.\\CSV\\metrics_by_period.csv`).
+* **Methods:**
+    * **Data Loading and Preparation:** The dataset of period means is loaded. Numeric columns are converted to float format, handling commas as decimal separators.
+    * **Chronological Ordering:** Picasso's artistic periods are ordered chronologically ("Early Years", "Blue Period", "Rose Period", "African Period", "Cubist Period", "Neoclassicist & Surrealist Period", "Later Years").
+    * **Calculation of Consecutive Differences:** For each metric (Fractal Dimension, Entropy, Birkhoff Measure, Euclidean Norm), the difference between the mean of the next period and the mean of the current period is calculated. This highlights the increase or decrease of each visual characteristic when transitioning from one artistic phase to another.
+* **Output:** A new CSV file (`.\\CSV\\metric_variations_by_period.csv`) listing each metric, the transition between periods (e.g., "Early Years to Blue Period") and the value of the observed mean difference.
+* **Insights:** This analysis provides a **direct and quantifiable measure** of Picasso's stylistic evolution. For example, a significant positive difference in "Fractal Dimension" between the Blue Period and Cubism would indicate an increase in complexity and fragmentation of forms. These data are essential for understanding not only *if* the style changed, but also *how* and *to what extent* each visual characteristic changed throughout his career.
+* **Key Visualizations:** No direct visualizations at this stage; the output is a tabular dataset quantifying the changes.
 
 ---
 
-## Sezione 9: Visualizzazione 3D e Clustering (Dati Normalizzati)
+## Section 9: 3D Visualization and Clustering (Normalized Data)
 
-* **Scopo:** Visualizzare le relazioni tra i diversi periodi artistici di Picasso nello spazio delle metriche normalizzate e identificare raggruppamenti stilistici tramite l'analisi di clustering gerarchico. Questo aiuta a comprendere l'evoluzione stilistica da una prospettiva multidimensionale.
-* **Input:** Il file CSV contenente le metriche normalizzate e i dettagli delle opere (`.\\CSV NORMALIZED\\normalized_metrics_with_details_no_outlier.csv`).
-* **Metodi:**
-    * **Caricamento e Preparazione Dati:** Il dataset normalizzato viene caricato. Si garantisce che la colonna 'Period' sia di tipo categorico e ordinata cronologicamente. Le colonne delle metriche sono convertite a numerico e le righe con valori mancanti nelle metriche o nel periodo vengono rimosse.
-    * **Calcolo Medie per Periodo:** Vengono calcolate le medie di tutte le metriche per ciascun periodo artistico.
-    * **Dendrogramma (Clustering Gerarchico):**
-        * Viene applicato il **clustering gerarchico** (metodo 'ward') utilizzando le medie della 'Dimensione Frattale' e dell' 'Entropia' per ogni periodo.
-        * Viene generato un **dendrogramma** che visualizza le relazioni di similarità tra i periodi. Un'eventuale linea di soglia orizzontale può aiutare a identificare potenziali cluster.
-        * Il dendrogramma viene salvato come immagine PNG (`.\\PLOT NORMALIZED\\DENDOGRAM\\dendrogram_fractal_entropy.png`).
-    * **Grafici Scatter 3D con Traiettoria Cronologica:**
-        * Per tutte le combinazioni possibili di tre metriche (es. (Dimensione Frattale, Entropia, Misura di Birkhoff), (Entropia, Misura di Birkhoff, Norma Euclidea), ecc.), vengono creati dei grafici scatter 3D.
-        * Ogni punto nel grafico rappresenta un periodo artistico, posizionato in base ai valori medi delle tre metriche selezionate.
-        * Vengono aggiunte **frecce cronologiche** che connettono i punti dei periodi successivi, visualizzando il "percorso evolutivo" di Picasso nello spazio delle metriche.
-        * Ogni grafico 3D viene salvato come immagine PNG (`.\\PLOT NORMALIZED\\3D DISPLAY\\Evolutionary Path of Picasso's Styles (Space of ...).png`).
+* **Purpose:** To visualize the relationships between Picasso's different artistic periods in the normalized metric space and identify stylistic groupings through hierarchical clustering analysis. This helps understand stylistic evolution from a multidimensional perspective.
+* **Input:** The CSV file containing normalized metrics and artwork details (`.\\CSV NORMALIZED\\normalized_metrics_with_details_no_outlier.csv`).
+* **Methods:**
+    * **Data Loading and Preparation:** The normalized dataset is loaded. Ensure the 'Period' column is categorical and chronologically ordered. Metric columns are converted to numeric, and rows with missing values in metrics or period are removed.
+    * **Calculate Means by Period:** Means of all metrics are calculated for each artistic period.
+    * **Dendrogram (Hierarchical Clustering):**
+        * **Hierarchical clustering** ('ward' method) is applied using the means of 'Fractal Dimension' and 'Entropy' for each period.
+        * A **dendrogram** is generated visualizing the similarity relationships between periods. An optional horizontal threshold line can help identify potential clusters.
+        * The dendrogram is saved as a PNG image (`.\\PLOT NORMALIZED\\DENDOGRAM\\dendrogram_fractal_entropy.png`).
+    * **3D Scatter Plots with Chronological Trajectory:**
+        * For all possible combinations of three metrics (e.g., (Fractal Dimension, Entropy, Birkhoff Measure), (Entropy, Birkhoff Measure, Euclidean Norm), etc.), 3D scatter plots are created.
+        * Each point in the plot represents an artistic period, positioned based on the mean values of the three selected metrics.
+        * **Chronological arrows** are added connecting successive period points, visualizing Picasso's "evolutionary path" in the metric space.
+        * Each 3D plot is saved as a PNG image (`.\\PLOT NORMALIZED\\3D DISPLAY\\Evolutionary Path of Picasso's Styles (Space of ...).png`).
 * **Output:**
-    * Un'immagine PNG del dendrogramma (`.\\PLOT NORMALIZED\\DENDOGRAM\\dendrogram_fractal_entropy.png`).
-    * Diverse immagini PNG dei grafici scatter 3D, una per ogni combinazione di tre metriche, che mostrano la traiettoria cronologica dei periodi nello spazio tridimensionale delle metriche (`.\\PLOT NORMALIZED\\3D DISPLAY\\...png`).
-* **Insights:** Il **dendrogramma** aiuterà a identificare quali periodi stilistici sono più simili tra loro in termini di complessità e casualità visiva, suggerendo possibili raggruppamenti naturali nello stile di Picasso. I **grafici 3D** offriranno una rappresentazione intuitiva e dinamica dell'evoluzione del suo stile, mostrando come le opere si sono spostate nello spazio delle caratteristiche visive nel corso della sua carriera. Le traiettorie cronologiche evidenzieranno le direzioni principali del cambiamento stilistico.
+    * A PNG image of the dendrogram (`.\\PLOT NORMALIZED\\DENDOGRAM\\dendrogram_fractal_entropy.png`).
+    * Several PNG images of 3D scatter plots, one for each combination of three metrics, showing the chronological trajectory of periods in the three-dimensional metric space (`.\\PLOT NORMALIZED\\3D DISPLAY\\...png`).
+* **Insights:** The **dendrogram** will help identify which stylistic periods are most similar to each other in terms of visual complexity and randomness, suggesting possible natural groupings in Picasso's style. The **3D plots** will offer an intuitive and dynamic representation of his style's evolution, showing how artworks shifted in the visual feature space throughout his career. Chronological trajectories will highlight the main directions of stylistic change.
 
 ---
 
-## Sezione 9.1: Visualizzazione 3D e Clustering (Dati Non Normalizzati)
+## Section 9.1: 3D Visualization and Clustering (Unnormalized Data)
 
-* **Scopo:** Visualizzare le relazioni tra i diversi periodi artistici di Picasso nello spazio delle metriche **non normalizzate** e identificare raggruppamenti stilistici tramite l'analisi di clustering gerarchico. Questo serve come confronto con l'analisi su dati normalizzati, per osservare l'impatto della scala delle metriche sulle relazioni.
-* **Input:** Il file CSV contenente le metriche originali (non normalizzate) e i dettagli delle opere (`.\\CSV\\metrics_with_details_no_outlier.csv`).
-* **Metodi:**
-    * **Caricamento e Preparazione Dati:** Il dataset viene caricato. Si garantisce che la colonna 'Period' sia di tipo categorico e ordinata cronologicamente. Le colonne delle metriche sono convertite a numerico e le righe con valori mancanti nelle metriche o nel periodo vengono rimosse.
-    * **Calcolo Medie per Periodo:** Vengono calcolate le medie di tutte le metriche per ciascun periodo artistico.
-    * **Dendrogramma (Clustering Gerarchico):**
-        * Viene applicato il **clustering gerarchico** (metodo 'ward') utilizzando le medie della 'Dimensione Frattale' e dell' 'Entropia' per ogni periodo.
-        * Viene generato un **dendrogramma** che visualizza le relazioni di similarità tra i periodi. Una linea di soglia orizzontale di esempio può aiutare a identificare potenziali cluster.
-        * Il dendrogramma viene salvato come immagine PNG (`.\\PLOT\\DENDOGRAM\\dendrogram_fractal_entropy.png`).
-    * **Grafici Scatter 3D con Traiettoria Cronologica:**
-        * Per tutte le combinazioni possibili di tre metriche, vengono creati dei grafici scatter 3D.
-        * Ogni punto nel grafico rappresenta un periodo artistico, posizionato in base ai valori medi delle tre metriche selezionate.
-        * Vengono aggiunte **frecce cronologiche** che connettono i punti dei periodi successivi, visualizzando il "percorso evolutivo" di Picasso nello spazio delle metriche.
-        * Ogni grafico 3D viene salvato come immagine PNG (`.\\PLOT\\3D DISPLAY\\Evolutionary Path of Picasso's Styles (Space of ...).png`).
+* **Purpose:** To visualize the relationships between Picasso's different artistic periods in the **unnormalized** metric space and identify stylistic groupings through hierarchical clustering analysis. This serves as a comparison with the analysis on normalized data, to observe the impact of metric scale on relationships.
+* **Input:** The CSV file containing original (unnormalized) metrics and artwork details (`.\\CSV\\metrics_with_details_no_outlier.csv`).
+* **Methods:**
+    * **Data Loading and Preparation:** The dataset is loaded. Ensure the 'Period' column is categorical and chronologically ordered. Metric columns are converted to numeric, and rows with missing values in metrics or period are removed.
+    * **Calculate Means by Period:** Means of all metrics are calculated for each artistic period.
+    * **Dendrogram (Hierarchical Clustering):**
+        * **Hierarchical clustering** ('ward' method) is applied using the means of 'Fractal Dimension' and 'Entropy' for each period.
+        * A **dendrogram** is generated visualizing the similarity relationships between periods. An example horizontal threshold line can help identify potential clusters.
+        * The dendrogram is saved as a PNG image (`.\\PLOT\\DENDOGRAM\\dendrogram_fractal_entropy.png`).
+    * **3D Scatter Plots with Chronological Trajectory:**
+        * For all possible combinations of three metrics, 3D scatter plots are created.
+        * Each point in the plot represents an artistic period, positioned based on the mean values of the three selected metrics.
+        * **Chronological arrows** are added connecting successive period points, visualizing Picasso's "evolutionary path" in the metric space.
+        * Each 3D plot is saved as a PNG image (`.\\PLOT\\3D DISPLAY\\Evolutionary Path of Picasso's Styles (Space of ...).png`).
 * **Output:**
-    * Un'immagine PNG del dendrogramma (`.\\PLOT\\DENDOGRAM\\dendrogram_fractal_entropy.png`).
-    * Diverse immagini PNG dei grafici scatter 3D, una per ogni combinazione di tre metriche, che mostrano la traiettoria cronologica dei periodi nello spazio tridimensionale delle metriche (`.\\PLOT\\3D DISPLAY\\...png`).
-* **Insights:** Questa sezione replica l'analisi della Sezione 9 utilizzando i dati non normalizzati. Il confronto tra i risultati dei due step (9 e 9.1) è cruciale: il dendrogramma e i grafici 3D sui dati non normalizzati potrebbero mostrare **raggruppamenti e traiettorie differenti** rispetto a quelli ottenuti con i dati normalizzati. Questo metterà in evidenza come la scala delle metriche possa influenzare l'interpretazione delle relazioni stilistiche e l'importanza della normalizzazione per algoritmi sensibili alla scala.
+    * A PNG image of the dendrogram (`.\\PLOT\\DENDOGRAM\\dendrogram_fractal_entropy.png`).
+    * Several PNG images of 3D scatter plots, one for each combination of three metrics, showing the chronological trajectory of periods in the three-dimensional metric space (`.\\PLOT\\3D DISPLAY\\...png`).
+* **Insights:** This section replicates the analysis of Section 9 using unnormalized data. The comparison between the results of the two steps (9 and 9.1) is crucial: the dendrogram and 3D plots on unnormalized data might show **different groupings and trajectories** compared to those obtained with normalized data. This will highlight how metric scale can influence the interpretation of stylistic relationships and the importance of normalization for scale-sensitive algorithms.
 
 ---
 
-## Sezione 10: Visualizzazione Box Plot (Dati Normalizzati)
+## Section 10: Box Plot Visualization (Normalized Data)
 
-* **Scopo:** Visualizzare la distribuzione delle metriche chiave (media ± deviazione standard) per periodi artistici consecutivi di Picasso, utilizzando i dati **normalizzati**. Questo aiuta a comprendere la sovrapposizione e la separazione stilistica tra le fasi della sua carriera.
-* **Input:** Il file CSV contenente le medie e le deviazioni standard delle metriche normalizzate per ogni periodo (`.\\CSV NORMALIZED\\normalized_metrics_by_period.csv`).
-* **Metodi:**
-    * **Caricamento Dati:** Il dataset delle medie e deviazioni standard per periodo viene caricato.
-    * **Generazione Box Plot 2D (con rettangoli di deviazione standard):** Vengono creati una serie di grafici 2D, ognuno focalizzato su due periodi consecutivi e su una specifica coppia di metriche normalizzate.
-        * Per ogni periodo, viene disegnato un rettangolo centrato sulla media delle due metriche e con lati pari a due volte la deviazione standard di ciascuna metrica (media ± deviazione standard). Questo rettangolo rappresenta l'intervallo di variabilità più comune delle opere in quel periodo rispetto a quelle metriche.
-        * Un punto al centro del rettangolo indica la media esatta.
-        * I periodi analizzati e le metriche visualizzate sono:
-            * **Early Years vs Blue Period:** Entropia (X-axis) e Distanza Euclidea (Y-axis).
-            * **Blue Period vs Rose Period:** Dimensione Frattale (X-axis) e Distanza Euclidea (Y-axis).
-            * **Rose Period vs African Period:** Dimensione Frattale (X-axis) e Distanza Euclidea (Y-axis).
-            * **African Period vs Cubist Period:** Dimensione Frattale (X-axis) e Distanza Euclidea (Y-axis).
-            * **Cubist Period vs Neoclassicist & Surrealist Period:** Misura di Birkhoff (X-axis) e Distanza Euclidea (Y-axis).
-            * **Neoclassicist & Surrealist Period vs Later Years:** Entropia (X-axis) e Dimensione Frattale (Y-axis).
-        * Ogni grafico viene salvato come immagine PNG nella directory `.\\PLOT NORMALIZED\\BOX DISPLAY\\`.
-* **Output:** Diversi file immagine PNG (`.\\PLOT NORMALIZED\\BOX DISPLAY\\... .png`), ciascuno raffigurante i rettangoli di deviazione standard per una coppia di periodi consecutivi, visualizzando la loro sovrapposizione o separazione nello spazio delle metriche selezionate.
-* **Insights:** Questa visualizzazione è fondamentale per comprendere la **distinzione e la sovrapposizione** tra i diversi periodi stilistici di Picasso in termini quantitativi. I rettangoli che si sovrappongono suggeriscono una continuità o similarità tra gli stili, mentre quelli separati indicano transizioni più nette e distintive. La dimensione del rettangolo (determinata dalla deviazione standard) fornisce anche un'indicazione della **variabilità stilistica** all'interno di ciascun periodo. L'utilizzo di dati normalizzati assicura che il confronto non sia influenzato dalle diverse scale delle metriche.
-
----
-
-## Sezione 10.1: Visualizzazione Box Plot (Dati Non Normalizzati)
-
-* **Scopo:** Visualizzare la distribuzione delle metriche chiave (media ± deviazione standard) per periodi artistici consecutivi di Picasso, utilizzando i dati **non normalizzati**. Questa sezione è cruciale per confrontare l'impatto della normalizzazione sull'interpretazione delle relazioni stilistiche.
-* **Input:** Il file CSV contenente le medie e le deviazioni standard delle metriche originali (non normalizzate) per ogni periodo (`.\\CSV\\metrics_by_period.csv`).
-* **Metodi:**
-    * **Caricamento Dati:** Il dataset delle medie e deviazioni standard per periodo viene caricato.
-    * **Generazione Box Plot 2D (con rettangoli di deviazione standard):** Vengono creati una serie di grafici 2D, ognuno focalizzato su due periodi consecutivi e su una specifica coppia di metriche non normalizzate.
-        * Per ogni periodo, viene disegnato un rettangolo centrato sulla media delle due metriche e con lati pari a due volte la deviazione standard di ciascuna metrica (media ± deviazione standard). Questo rettangolo visualizza l'intervallo di variabilità più comune delle opere in quel periodo.
-        * Un punto al centro del rettangolo indica la media esatta.
-        * I periodi analizzati e le metriche visualizzate sono:
-            * **Early Years vs Blue Period:** Distanza Euclidea (X-axis) ed Entropia (Y-axis).
-            * **Blue Period vs Rose Period:** Dimensione Frattale (X-axis) e Distanza Euclidea (Y-axis).
-            * **Rose Period vs African Period:** Dimensione Frattale (X-axis) e Distanza Euclidea (Y-axis).
-            * **African Period vs Cubist Period:** Dimensione Frattale (X-axis) e Distanza Euclidea (Y-axis).
-            * **Cubist Period vs Neoclassicist & Surrealist Period:** Misura di Birkhoff (X-axis) e Distanza Euclidea (Y-axis).
-            * **Neoclassicist & Surrealist Period vs Later Years:** Entropia (X-axis) e Dimensione Frattale (Y-axis).
-        * Ogni grafico viene salvato come immagine PNG nella directory `.\\PLOT\\BOX DISPLAY\\` con l'indicazione "(Unnormalized Data)" nel titolo e nel nome del file per chiarezza.
-* **Output:** Diversi file immagine PNG (`.\\PLOT\\BOX DISPLAY\\... (Unnormalized).png`), ciascuno raffigurante i rettangoli di deviazione standard per una coppia di periodi consecutivi, basati su dati non normalizzati.
-* **Insights:** Questa sezione permette un **confronto diretto** con la Sezione 10. L'analisi dei box plot con dati non normalizzati rivelerà come le differenze nelle scale delle metriche possano alterare l'aspetto delle distribuzioni e delle sovrapposizioni tra i periodi. Si prevede che le differenze di magnitudine tra le metriche possano rendere alcune separazioni più o meno evidenti, sottolineando l'importanza della normalizzazione per un'analisi comparativa equa e per la maggior parte degli algoritmi di apprendimento automatico.
+* **Purpose:** To visualize the distribution of key metrics (mean ± standard deviation) for consecutive artistic periods of Picasso, using **normalized** data. This helps understand stylistic overlap and separation between the phases of his career.
+* **Input:** The CSV file containing the means and standard deviations of normalized metrics for each period (`.\\CSV NORMALIZED\\normalized_metrics_by_period.csv`).
+* **Methods:**
+    * **Data Loading:** The dataset of period means and standard deviations is loaded.
+    * **Generate 2D Box Plots (with standard deviation rectangles):** A series of 2D plots are created, each focusing on two consecutive periods and a specific pair of normalized metrics.
+        * For each period, a rectangle is drawn centered on the mean of the two metrics and with sides equal to twice the standard deviation of each metric (mean ± standard deviation). This rectangle represents the most common variability range of artworks in that period with respect to those metrics.
+        * A point at the center of the rectangle indicates the exact mean.
+        * The analyzed periods and visualized metrics are:
+            * **Early Years vs Blue Period:** Entropy (X-axis) and Euclidean Distance (Y-axis).
+            * **Blue Period vs Rose Period:** Fractal Dimension (X-axis) and Euclidean Distance (Y-axis).
+            * **Rose Period vs African Period:** Fractal Dimension (X-axis) and Euclidean Distance (Y-axis).
+            * **African Period vs Cubist Period:** Fractal Dimension (X-axis) and Euclidean Distance (Y-axis).
+            * **Cubist Period vs Neoclassicist & Surrealist Period:** Birkhoff Measure (X-axis) and Euclidean Distance (Y-axis).
+            * **Neoclassicist & Surrealist Period vs Later Years:** Entropy (X-axis) and Fractal Dimension (Y-axis).
+        * Each plot is saved as a PNG image in the `.\\PLOT NORMALIZED\\BOX DISPLAY\\` directory.
+* **Output:** Several PNG image files (`.\\PLOT NORMALIZED\\BOX DISPLAY\\... .png`), each depicting standard deviation rectangles for a pair of consecutive periods, visualizing their overlap or separation in the selected metric space.
+* **Insights:** This visualization is fundamental for understanding the **distinction and overlap** between Picasso's different stylistic periods in quantitative terms. Overlapping rectangles suggest continuity or similarity between styles, while separated ones indicate sharper, more distinctive transitions. The size of the rectangle (determined by the standard deviation) also provides an indication of the **stylistic variability** within each period. Using normalized data ensures that the comparison is not influenced by different metric scales.
 
 ---
 
-## Sezione 11: Clustering K-Means (Dati Normalizzati)
+## Section 10.1: Box Plot Visualization (Unnormalized Data)
 
-* **Scopo:** Applicare l'algoritmo di clustering K-Means ai dati delle metriche visive normalizzate per identificare raggruppamenti naturali nelle opere di Picasso, basati sulle loro caratteristiche intrinseche piuttosto che sull'ordine cronologico. Si utilizzano 7 cluster, in linea con il numero dei periodi stilistici definiti.
-* **Input:** Il file CSV contenente le metriche normalizzate per ogni opera d'arte (`.\\CSV NORMALIZED\\normalized_metrics_with_details_no_outlier.csv`).
-* **Metodi:**
-    * **Caricamento Dati:** Il dataset normalizzato viene caricato, assicurandosi che i decimali siano interpretati correttamente.
-    * **Configurazione:** Vengono definite le quattro metriche ('Fractal dimension', 'Entropy', 'Birkhoff measure', 'Euclidean distance') e il numero di cluster ($k=7$).
-    * **Iterazione su Coppie di Metriche:** L'algoritmo K-Means viene eseguito per ogni combinazione unica di due metriche.
-        * Per ogni coppia di metriche, i dati vengono selezionati e l'algoritmo K-Means viene inizializzato e addestrato. `random_state=42` assicura la riproducibilità dei risultati.
-        * Le etichette dei cluster assegnate a ciascun punto dati (opera d'arte) vengono aggiunte al DataFrame.
-        * Vengono calcolati e stampati i centroidi di ciascun cluster, fornendo le coordinate medie di ogni gruppo nello spazio delle metriche.
-    * **Visualizzazione dei Cluster:** Per ogni coppia di metriche analizzata, viene generato un grafico a dispersione (scatter plot):
-        * I punti rappresentano le singole opere d'arte, colorate in base al cluster assegnato da K-Means.
-        * I centroidi di ciascun cluster sono visualizzati come marcatori 'X' rossi e neri, evidenziando il "centro" di ogni gruppo.
-        * Il titolo del grafico indica le metriche utilizzate e il numero di cluster.
-        * Ogni grafico viene salvato come immagine PNG nella directory `.\\PLOT NORMALIZED\\CLUSTER\\` per una successiva revisione e analisi.
+* **Purpose:** To visualize the distribution of key metrics (mean ± standard deviation) for consecutive artistic periods of Picasso, using **unnormalized** data. This section is crucial for comparing the impact of normalization on the interpretation of stylistic relationships.
+* **Input:** The CSV file containing the means and standard deviations of original (unnormalized) metrics for each period (`.\\CSV\\metrics_by_period.csv`).
+* **Methods:**
+    * **Data Loading:** The dataset of period means and standard deviations is loaded.
+    * **Generate 2D Box Plots (with standard deviation rectangles):** A series of 2D plots are created, each focusing on two consecutive periods and a specific pair of unnormalized metrics.
+        * For each period, a rectangle is drawn centered on the mean of the two metrics and with sides equal to twice the standard deviation of each metric (mean ± standard deviation). This rectangle visualizes the most common variability range of artworks in that period.
+        * A point at the center of the rectangle indicates the exact mean.
+        * The analyzed periods and visualized metrics are:
+            * **Early Years vs Blue Period:** Euclidean Distance (X-axis) and Entropy (Y-axis).
+            * **Blue Period vs Rose Period:** Fractal Dimension (X-axis) and Euclidean Distance (Y-axis).
+            * **Rose Period vs African Period:** Fractal Dimension (X-axis) and Euclidean Distance (Y-axis).
+            * **African Period vs Cubist Period:** Fractal Dimension (X-axis) and Euclidean Distance (Y-axis).
+            * **Cubist Period vs Neoclassicist & Surrealist Period:** Birkhoff Measure (X-axis) and Euclidean Distance (Y-axis).
+            * **Neoclassicist & Surrealist Period vs Later Years:** Entropy (X-axis) and Fractal Dimension (Y-axis).
+        * Each plot is saved as a PNG image in the `.\\PLOT\\BOX DISPLAY\\` directory (different from normalized data) with "(Unnormalized Data)" in the title and filename for clarity.
+* **Output:** Several PNG image files (`.\\PLOT\\BOX DISPLAY\\... (Unnormalized).png`), each depicting standard deviation rectangles for a pair of consecutive periods, based on unnormalized data.
+* **Insights:** This section allows for a **direct comparison** with Section 10. The analysis of box plots with unnormalized data will reveal how differences in metric scales can alter the appearance of distributions and overlaps between periods. It is expected that magnitude differences between metrics may make some separations more or less evident, emphasizing the importance of data preprocessing (normalization) for robust and interpretable clustering results, especially when metrics have different scales.
+
+---
+
+## Section 11: K-Means Clustering (Normalized Data)
+
+* **Purpose:** To apply the K-Means clustering algorithm to normalized visual metric data to identify natural groupings in Picasso's artworks, based on their intrinsic characteristics rather than chronological order. 7 clusters are used, consistent with the number of defined stylistic periods.
+* **Input:** The CSV file containing normalized metrics for each artwork (`.\\CSV NORMALIZED\\normalized_metrics_with_details_no_outlier.csv`).
+* **Methods:**
+    * **Data Loading:** The normalized dataset is loaded, ensuring decimals are interpreted correctly.
+    * **Configuration:** The four metrics ('Fractal dimension', 'Entropy', 'Birkhoff measure', 'Euclidean distance') and the number of clusters ($k=7$) are defined.
+    * **Iteration over Metric Pairs:** The K-Means algorithm is executed for each unique combination of two metrics.
+        * For each metric pair, data is selected, and the K-Means algorithm is initialized and trained. `random_state=42` ensures reproducibility of results.
+        * Cluster labels assigned to each data point (artwork) are added to the DataFrame.
+        * Cluster centroids are calculated and printed, providing the mean coordinates of each group in the metric space.
+    * **Cluster Visualization:** For each analyzed metric pair, a scatter plot is generated:
+        * Points represent individual artworks, colored according to the K-Means assigned cluster.
+        * Cluster centroids are visualized as red and black 'X' markers, highlighting the "center" of each group.
+        * The plot title indicates the metrics used and the number of clusters.
+        * Each plot is saved as a PNG image in the `.\\PLOT NORMALIZED\\CLUSTER\\` directory for subsequent review and analysis.
 * **Output:**
-    * Stampa dei centroidi per ogni coppia di metriche analizzata.
-    * Diversi file immagine PNG (`.\\PLOT NORMALIZED\\CLUSTER\\KMeans_Cluster_... .png`), ciascuno mostrando la distribuzione dei cluster K-Means per una specifica coppia di metriche normalizzate.
-    * Il DataFrame originale arricchito con nuove colonne che indicano l'assegnazione del cluster per ogni opera d'arte in relazione a ciascuna coppia di metriche considerata.
-* **Insights:** Questa sezione mira a scoprire se esistono raggruppamenti stilistici *emergenti* dalle proprietà intrinseche delle opere, indipendentemente dalla classificazione storica dei periodi. Confrontando questi cluster con i periodi predefiniti, si può valutare la coerenza delle metriche nel catturare le transizioni stilistiche. I grafici mostreranno visivamente come le opere si raggruppano in base alle loro caratteristiche quantificabili, e la posizione dei centroidi indicherà le caratteristiche medie di ciascun cluster stilistico identificato dall'algoritmo.
+    * Printout of centroids for each analyzed metric pair.
+    * Several PNG image files (`.\\PLOT NORMALIZED\\CLUSTER\\KMeans_Cluster_... .png`), each showing the distribution of K-Means clusters for a specific pair of normalized metrics.
+    * The original DataFrame enriched with new columns indicating cluster assignment for each artwork in relation to each considered metric pair.
+* **Insights:** This section aims to discover if *emergent* stylistic groupings exist from the intrinsic properties of artworks, independent of historical period classification. By comparing these clusters with predefined periods, the consistency of metrics in capturing stylistic transitions can be evaluated. Plots will visually show how artworks group based on their quantifiable characteristics, and centroid positions will indicate the average characteristics of each stylistic cluster identified by the algorithm.
 
 ---
 
-## Sezione 11.1: Clustering K-Means (Dati Non Normalizzati)
+## Section 11.1: K-Means Clustering (Unnormalized Data)
 
-* **Scopo:** Applicare l'algoritmo di clustering K-Means ai dati delle metriche visive **non normalizzate** per identificare raggruppamenti naturali nelle opere di Picasso. Questa analisi serve come confronto diretto con la Sezione 11 per valutare l'impatto della normalizzazione sui risultati del clustering. Si mantengono $k=7$ cluster per coerenza.
-* **Input:** Il file CSV contenente le metriche originali (non normalizzate) per ogni opera d'arte (`.\\CSV\\metrics_with_details_no_outlier.csv`).
-* **Metodi:**
-    * **Caricamento Dati:** Il dataset non normalizzato viene caricato, assicurandosi che i decimali siano interpretati correttamente.
-    * **Configurazione:** Vengono definite le quattro metriche ('Fractal dimension', 'Entropy', 'Birkhoff measure', 'Euclidean distance') e il numero di cluster ($k=7$).
-    * **Iterazione su Coppie di Metriche:** L'algoritmo K-Means viene eseguito per ogni combinazione unica di due metriche.
-        * Per ogni coppia di metriche, i dati vengono selezionati e l'algoritmo K-Means viene inizializzato e addestrato. `random_state=42` assicura la riproducibilità.
-        * Le etichette dei cluster assegnate a ciascun punto dati (opera d'arte) vengono aggiunte al DataFrame.
-        * Vengono calcolati e stampati i centroidi di ciascun cluster, fornendo le coordinate medie di ogni gruppo nello spazio delle metriche.
-    * **Visualizzazione dei Cluster:** Per ogni coppia di metriche analizzata, viene generato un grafico a dispersione (scatter plot):
-        * I punti rappresentano le singole opere d'arte, colorate in base al cluster assegnato da K-Means.
-        * I centroidi di ciascun cluster sono visualizzati come marcatori 'X' rossi e neri, evidenziando il "centro" di ogni gruppo.
-        * Il titolo del grafico indica le metriche utilizzate e il numero di cluster.
-        * Ogni grafico viene salvato come immagine PNG nella directory `.\\PLOT\\CLUSTER\\` (diversa da quella dei dati normalizzati) per distinguere chiaramente i risultati.
+* **Purpose:** To apply the K-Means clustering algorithm to **unnormalized** visual metric data to identify natural groupings in Picasso's artworks. This analysis serves as a direct comparison with Section 11 to evaluate the impact of normalization on clustering results. $k=7$ clusters are maintained for consistency.
+* **Input:** The CSV file containing original (unnormalized) metrics for each artwork (`.\\CSV\\metrics_with_details_no_outlier.csv`).
+* **Methods:**
+    * **Data Loading:** The unnormalized dataset is loaded, ensuring decimals are interpreted correctly.
+    * **Configuration:** The four metrics ('Fractal dimension', 'Entropy', 'Birkhoff measure', 'Euclidean distance') and the number of clusters ($k=7$) are defined.
+    * **Iteration over Metric Pairs:** The K-Means algorithm is executed for each unique combination of two metrics.
+        * For each metric pair, data is selected, and the K-Means algorithm is initialized and trained. `random_state=42` ensures reproducibility.
+        * Cluster labels assigned to each data point (artwork) are added to the DataFrame.
+        * Cluster centroids are calculated and printed, providing the mean coordinates of each group in the metric space.
+    * **Cluster Visualization:** For each analyzed metric pair, a scatter plot is generated:
+        * Points represent individual artworks, colored according to the K-Means assigned cluster.
+        * Cluster centroids are visualized as red and black 'X' markers, highlighting the "center" of each group.
+        * The plot title indicates the metrics used and the number of clusters.
+        * Each plot is saved as a PNG image in the `.\\PLOT\\CLUSTER\\` directory (different from normalized data) to clearly distinguish results.
 * **Output:**
-    * Stampa dei centroidi per ogni coppia di metriche analizzata.
-    * Diversi file immagine PNG (`.\\PLOT\\CLUSTER\\KMeans_Cluster_... .png`), ciascuno mostrando la distribuzione dei cluster K-Means per una specifica coppia di metriche non normalizzate.
-    * Il DataFrame originale arricchito con nuove colonne che indicano l'assegnazione del cluster per ogni opera d'arte in relazione a ciascuna coppia di metriche considerata.
-* **Insights:** Questa sezione è fondamentale per confrontare l'efficacia del clustering K-Means con e senza normalizzazione. Si prevede che i cluster formati con dati non normalizzati possano essere fortemente influenzati dalla scala delle singole metriche, portando a raggruppamenti meno significativi o dominati dalla metrica con il range di valori più ampio. Questo confronto aiuterà a evidenziare l'importanza della pre-elaborazione dei dati (normalizzazione) per ottenere risultati di clustering più robusti e interpretabili, soprattutto quando le metriche hanno scale diverse.
+    * Printout of centroids for each analyzed metric pair.
+    * Several PNG image files (`.\\PLOT\\CLUSTER\\KMeans_Cluster_... .png`), each showing the distribution of K-Means clusters for a specific pair of unnormalized metrics.
+    * The original DataFrame enriched with new columns indicating cluster assignment for each artwork in relation to each considered metric pair.
+* **Insights:** This section is fundamental for comparing the effectiveness of K-Means clustering with and without normalization. It is expected that clusters formed with unnormalized data may be strongly influenced by the scale of individual metrics, leading to less significant groupings or those dominated by the metric with the widest value range. This comparison will help highlight the importance of data preprocessing (normalization) for obtaining more robust and interpretable clustering results, especially when metrics have different scales.
 
 ---
 
-## Sezione 12: Stima della Densità del Kernel (KDE) (Dati Normalizzati)
+## Section 12: Kernel Density Estimation (KDE) (Normalized Data)
 
-* **Scopo:** Analizzare la distribuzione di probabilità delle metriche visive di Picasso utilizzando la Stima della Densità del Kernel (KDE) sui dati **normalizzati**. Questa sezione mira a visualizzare la densità dei punti dati nello spazio delle metriche, identificando le aree di maggiore concentrazione e le potenziali sovrapposizioni tra i periodi stilistici.
-* **Input:** Il file CSV contenente le metriche normalizzate per ogni opera d'arte (`.\\CSV NORMALIZED\\normalized_metrics_with_details_no_outlier.csv`).
-* **Metodi:**
-    * **Preparazione Dati:**
-        * Il dataset normalizzato viene caricato.
-        * Le colonne delle metriche ('Fractal dimension', 'Entropy', 'Birkhoff measure', 'Euclidean distance') vengono identificate e convertite in formato numerico. Le righe con valori NaN nelle metriche vengono rimosse per garantire l'integrità del calcolo.
-    * **Normalizzazione (Min-Max Scaling):** Sebbene i dati siano già caricati da un file "normalizzato", viene eseguita una ri-normalizzazione Min-Max (tra 0 e 1) sulle metriche per garantire che tutti i valori rientrino in un intervallo coerente, il che è cruciale per il calcolo della Distanza di Mahalanobis e per la visualizzazione KDE.
-    * **Calcolo della Distanza di Mahalanobis:**
-        * Per ogni periodo artistico (definito dalla colonna 'Period'), viene calcolata la distanza di Mahalanobis di ciascuna opera d'arte dal centroide del proprio periodo.
-        * La distanza di Mahalanobis tiene conto della correlazione tra le metriche e della loro varianza, fornendo una misura più robusta della "distanza" rispetto alla semplice distanza euclidea, specialmente in spazi multidimensionali.
-        * Viene gestita la potenziale singolarità della matrice di covarianza aggiungendo un piccolo "jitter" per garantirne l'invertibilità.
-        * Le distanze calcolate vengono aggiunte al DataFrame in una nuova colonna 'Mahalanobis_Distance_Normalized'.
-    * **Calcolo del "Contesto di Adattamento" (Contextual Fit):**
-        * Viene introdotta una metrica di "Contesto di Adattamento", definita come l'inverso della Distanza di Mahalanobis (1 / (Distanza di Mahalanobis + epsilon), dove epsilon è un piccolo valore per evitare divisioni per zero).
-        * Un valore più alto di "Contesto di Adattamento" indica che un'opera si adatta meglio alle caratteristiche medie del suo periodo.
-        * Questa metrica viene aggiunta al DataFrame in una nuova colonna 'Contextual_Fit'.
-    * **Calcolo Statistiche Riassuntive:** Vengono calcolate e stampate le medie e le deviazioni standard della Distanza di Mahalanobis normalizzata e del "Contesto di Adattamento" per ciascun periodo artistico, fornendo una sintesi numerica dell'omogeneità interna di ogni periodo.
-    * **Generazione di Grafici KDE:**
-        * **KDE Univariata (2x2 Subplot):** Viene generato un singolo grafico contenente quattro subplot, ognuno dei quali mostra la distribuzione di densità di probabilità (KDE) per una singola metrica (Dimensione Frattale, Entropia, Misura di Birkhoff, Distanza Euclidea). Questo fornisce una visione d'insieme della distribuzione di ciascuna metrica in tutto il dataset.
-        * **KDE Bivariata (per Coppie di Metriche):** Vengono generati grafici KDE separati per ogni combinazione unica di due metriche. Questi grafici mostrano la densità congiunta delle due metriche, evidenziando le aree dove le opere sono più concentrate e le relazioni tra le metriche. Vengono aggiunti anche i singoli punti dati per fornire contesto.
-        * Tutti i grafici vengono salvati come immagini PNG nella directory `.\\PLOT NORMALIZED\\KDE PLOT\\`.
+* **Purpose:** To analyze the probability distribution of Picasso's visual metrics using Kernel Density Estimation (KDE) on **normalized** data. This section aims to visualize the density of data points in the metric space, identifying areas of higher concentration and potential overlaps between stylistic periods.
+* **Input:** The CSV file containing normalized metrics for each artwork (`.\\CSV NORMALIZED\\normalized_metrics_with_details_no_outlier.csv`).
+* **Methods:**
+    * **Data Preparation:**
+        * The normalized dataset is loaded.
+        * Metric columns ('Fractal dimension', 'Entropy', 'Birkhoff measure', 'Euclidean distance') are identified and converted to a numeric format. Rows with NaN values in the metrics are removed to ensure calculation integrity.
+    * **Normalization (Min-Max Scaling):** Although the data is already loaded from a "normalized" file, Min-Max re-normalization (between 0 and 1) is performed on the metrics to ensure all values fall within a consistent range, which is crucial for Mahalanobis Distance calculation and KDE visualization.
+    * **Mahalanobis Distance Calculation:**
+        * For each artistic period (defined by the 'Period' column), the Mahalanobis distance of each artwork from its period's centroid is calculated.
+        * Mahalanobis distance accounts for the correlation between metrics and their variance, providing a more robust measure of "distance" than simple Euclidean distance, especially in multidimensional spaces.
+        * Potential singularity of the covariance matrix is handled by adding a small "jitter" to ensure its invertibility.
+        * The calculated distances are added to the DataFrame in a new column 'Mahalanobis_Distance_Normalized'.
+    * **Contextual Fit Calculation:**
+        * A "Contextual Fit" metric is introduced, defined as the inverse of the Mahalanobis Distance (1 / (Mahalanobis_Distance + epsilon), where epsilon is a small value to prevent division by zero).
+        * A higher "Contextual Fit" value indicates that an artwork better fits the average characteristics of its period.
+        * This metric is added to the DataFrame in a new column 'Contextual_Fit'.
+    * **Summary Statistics Calculation:** The means and standard deviations of the normalized Mahalanobis Distance and "Contextual Fit" are calculated and printed for each artistic period, providing a numerical summary of the internal homogeneity of each period.
+    * **KDE Plot Generation:**
+        * **Univariate KDE (2x2 Subplot):** A single plot containing four subplots is generated, each showing the probability density distribution (KDE) for a single metric (Fractal Dimension, Entropy, Birkhoff Measure, Euclidean Distance). This provides an overview of the distribution of each metric across the entire dataset.
+        * **Bivariate KDE (for Metric Pairs):** Separate KDE plots are generated for each unique combination of two metrics. These plots show the joint density of the two metrics, highlighting areas where artworks are more concentrated and the relationships between the metrics. Individual data points are also added to provide context.
+        * All plots are saved as PNG images in the `.\\PLOT NORMALIZED\\KDE PLOT\\` directory.
 * **Output:**
-    * Il DataFrame arricchito con le colonne 'Mahalanobis_Distance_Normalized' e 'Contextual_Fit'.
-    * Stampa delle medie e deviazioni standard delle distanze di Mahalanobis e del "Contesto di Adattamento" per periodo.
-    * Un file immagine PNG (`.\\PLOT NORMALIZED\\KDE PLOT\\all_univariate_kde_2x2_subplot.png`) che mostra le distribuzioni univariate di tutte le metriche.
-    * Diversi file immagine PNG (`.\\PLOT NORMALIZED\\KDE PLOT\\kde_bivariate_... .png`), ciascuno raffigurante la distribuzione di densità congiunta per una coppia di metriche normalizzate.
-* **Insights:** Questa sezione fornisce una comprensione approfondita della distribuzione delle metriche e della coesione interna dei periodi. I grafici KDE visualizzeranno le "impronte" stilistiche di Picasso, mostrando come le metriche si raggruppano e si sovrappongono. Le distanze di Mahalanobis e il "Contesto di Adattamento" quantificheranno quanto le singole opere si discostano o si conformano al prototipo del loro periodo, fornendo una base per valutare la fluidità o la rigidità delle transizioni stilistiche.
+    * The DataFrame enriched with 'Mahalanobis_Distance_Normalized' and 'Contextual_Fit' columns.
+    * Printout of the means and standard deviations of Mahalanobis distances and "Contextual Fit" per period.
+    * A PNG image file (`.\\PLOT NORMALIZED\\KDE PLOT\\all_univariate_kde_2x2_subplot.png`) showing the univariate distributions of all metrics.
+    * Several PNG image files (`.\\PLOT NORMALIZED\\KDE PLOT\\kde_bivariate_... .png`), each depicting the joint density distribution for a pair of normalized metrics.
+* **Insights:** This section provides an in-depth understanding of the distribution of metrics and the internal cohesion of the periods. KDE plots will visualize Picasso's stylistic "fingerprints," showing how metrics cluster and overlap. Mahalanobis distances and "Contextual Fit" will quantify how individual artworks deviate from or conform to their period's prototype, providing a basis for evaluating the fluidity or rigidity of stylistic transitions.
 
 ---
 
-## Sezione 12.1: Stima della Densità del Kernel (KDE) (Dati Non Normalizzati)
+## Section 12.1: Kernel Density Estimation (KDE) (Unnormalized Data)
 
-* **Scopo:** Analizzare la distribuzione di probabilità delle metriche visive di Picasso utilizzando la Stima della Densità del Kernel (KDE) sui dati **non normalizzati**. Questa sezione è cruciale per confrontare l'impatto della normalizzazione sull'interpretazione delle relazioni stilistiche e sulla forma delle distribuzioni.
-* **Input:** Il file CSV contenente le metriche originali (non normalizzate) per ogni opera d'arte (`.\\CSV\\metrics_with_details_no_outlier.csv`).
-* **Metodi:**
-    * **Preparazione Dati:**
-        * Il dataset originale (non normalizzato) viene caricato.
-        * Le colonne delle metriche ('Fractal dimension', 'Entropy', 'Birkhoff measure', 'Euclidean distance') vengono identificate e convertite in formato numerico. Le righe con valori NaN nelle metriche vengono rimosse.
-    * **Normalizzazione (Min-Max Scaling):** A differenza della Sezione 12, qui i dati originali vengono normalizzati Min-Max (tra 0 e 1) *all'interno di questa sezione* prima di calcolare la Distanza di Mahalanobis. Questo passaggio è intenzionale per permettere il calcolo della Mahalanobis su dati scalati, anche se il focus è sui KDE dei dati non normalizzati. Per i KDE, viene utilizzato il `df_cleaned_for_kde` che contiene i valori originali (non normalizzati).
-    * **Calcolo della Distanza di Mahalanobis (sui dati normalizzati):**
-        * Per ogni periodo, viene calcolata la distanza di Mahalanobis di ciascuna opera d'arte dal centroide del proprio periodo, ma **su versioni normalizzate dei dati all'interno di questa fase**. Questo calcolo è funzionale a fornire la metrica 'Contextual_Fit', che è basata su dati scalati per essere interpretabile tra metriche diverse.
-        * Vengono gestiti i casi di insufficienti punti dati o matrici di covarianza singolari, aggiungendo jitter per l'invertibilità.
-        * Le distanze calcolate vengono aggiunte al DataFrame in una nuova colonna 'Mahalanobis_Distance_Normalized'.
-    * **Calcolo del "Contesto di Adattamento" (Contextual Fit) (sui dati normalizzati):**
-        * Viene calcolata la metrica di "Contesto di Adattamento" (inverso della Distanza di Mahalanobis) basata sulle distanze di Mahalanobis calcolate sui dati normalizzati.
-        * Questa metrica viene aggiunta al DataFrame in una nuova colonna 'Contextual_Fit'.
-    * **Calcolo Statistiche Riassuntive:** Vengono calcolate e stampate le medie e le deviazioni standard della Distanza di Mahalanobis normalizzata e del "Contesto di Adattamento" per ciascun periodo artistico.
-    * **Generazione di Grafici KDE (sui dati NON normalizzati originali):**
-        * **KDE Univariata (2x2 Subplot):** Viene generato un singolo grafico contenente quattro subplot, ognuno dei quali mostra la distribuzione di densità di probabilità (KDE) per una singola metrica (Dimensione Frattale, Entropia, Misura di Birkhoff, Distanza Euclidea) **utilizzando i dati originali non normalizzati** (`df_cleaned_for_kde`).
-        * **KDE Bivariata (per Coppie di Metriche):** Vengono generati grafici KDE separati per ogni combinazione unica di due metriche. Questi grafici mostrano la densità congiunta delle due metriche **utilizzando i dati originali non normalizzati**, evidenziando le aree di maggiore concentrazione. Vengono aggiunti anche i singoli punti dati per fornire contesto.
-        * Tutti i grafici vengono salvati come immagini PNG nella directory `.\\PLOT\\KDE PLOT\\` (diversa da quella dei dati normalizzati) per distinguere chiaramente i risultati.
+* **Purpose:** To analyze the probability distribution of Picasso's visual metrics using Kernel Density Estimation (KDE) on **unnormalized** data. This section is crucial for comparing the impact of normalization on the interpretation of stylistic relationships and the shape of distributions.
+* **Input:** The CSV file containing original (unnormalized) metrics for each artwork (`.\\CSV\\metrics_with_details_no_outlier.csv`).
+* **Methods:**
+    * **Data Preparation:**
+        * The original (unnormalized) dataset is loaded.
+        * Metric columns ('Fractal dimension', 'Entropy', 'Birkhoff measure', 'Euclidean distance') are identified and converted to a numeric format. Rows with NaN values in the metrics are removed.
+    * **Normalization (Min-Max Scaling):** Unlike Section 12, here the original data is Min-Max normalized (between 0 and 1) *within this section* before calculating the Mahalanobis Distance. This step is intentional to allow the Mahalanobis calculation on scaled data, even if the focus is on KDE of unnormalized data. For KDEs, `df_cleaned_for_kde` which contains the original (unnormalized) values is used.
+    * **Mahalanobis Distance Calculation (on normalized data):**
+        * For each period, the Mahalanobis distance of each artwork from its period's centroid is calculated, but **on normalized versions of the data within this phase**. This calculation is functional to provide the 'Contextual_Fit' metric, which is based on scaled data to be interpretable across different metrics.
+        * Cases of insufficient data points or singular covariance matrices are handled by adding jitter for invertibility.
+        * The calculated distances are added to the DataFrame in a new column 'Mahalanobis_Distance_Normalized'.
+    * **Contextual Fit Calculation (on normalized data):**
+        * A new column 'Contextual_Fit' is created.
+        * For each artwork, the "Contextual Fit" is calculated as the inverse of its 'Mahalanobis_Distance' (i.e., $1 / (\text{Mahalanobis_Distance})$) based on the Mahalanobis distances calculated on normalized data.
+        * This metric is added to the DataFrame in a new column 'Contextual_Fit'.
+    * **Summary Statistics Calculation:** The means and standard deviations of the normalized Mahalanobis Distance and "Contextual Fit" are calculated and printed for each artistic period.
+    * **KDE Plot Generation (on original UNnormalized data):**
+        * **Univariate KDE (2x2 Subplot):** A single plot containing four subplots is generated, each showing the probability density distribution (KDE) for a single metric (Fractal Dimension, Entropy, Birkhoff Measure, Euclidean Distance) **using the original unnormalized data** (`df_cleaned_for_kde`).
+        * **Bivariate KDE (for Metric Pairs):** Separate KDE plots are generated for each unique combination of two metrics. These plots show the joint density of the two metrics **using the original unnormalized data**, highlighting areas of higher concentration. Individual data points are also added to provide context.
+        * All plots are saved as PNG images in the `.\\PLOT\\KDE PLOT\\` directory (different from the normalized data directory) to clearly distinguish results.
 * **Output:**
-    * Il DataFrame arricchito con le colonne 'Mahalanobis_Distance_Normalized' e 'Contextual_Fit' (i cui valori sono derivati da metriche normalizzate internamente a questa fase).
-    * Stampa delle medie e deviazioni standard delle distanze di Mahalanobis e del "Contesto di Adattamento" per periodo.
-    * Un file immagine PNG (`.\\PLOT\\KDE PLOT\\all_univariate_kde_2x2_subplot.png`) che mostra le distribuzioni univariate di tutte le metriche **non normalizzate**.
-    * Diversi file immagine PNG (`.\\PLOT\\KDE PLOT\\kde_bivariate_... .png`), ciascuno raffigurante la distribuzione di densità congiunta per una coppia di metriche **non normalizzate**.
-* **Insights:** Il confronto tra i grafici KDE generati qui (su dati non normalizzati) e quelli della Sezione 12 (su dati normalizzati) è fondamentale. Si prevede che le distribuzioni KDE sui dati non normalizzati possano mostrare picchi e dispersioni molto diverse a causa delle scale intrinseche di ciascuna metrica, potenzialmente oscurando relazioni o creando l'illusione di separazioni dove non ve ne sono di significative dopo la normalizzazione. Questo passo rafforza l'importanza della normalizzazione per un'analisi comparativa equa e per la validità di tecniche come la Distanza di Mahalanobis, che dipendono dalle scale e correlazioni tra le variabili.
+    * The DataFrame enriched with 'Mahalanobis_Distance_Normalized' and 'Contextual_Fit' columns (whose values are derived from metrics normalized internally in this phase).
+    * Printout of the means and standard deviations of Mahalanobis distances and "Contextual Fit" per period.
+    * A PNG image file (`.\\PLOT\\KDE PLOT\\all_univariate_kde_2x2_subplot.png`) showing the univariate distributions of all **unnormalized** metrics.
+    * Several PNG image files (`.\\PLOT\\KDE PLOT\\kde_bivariate_... .png`), each depicting the joint density distribution for a pair of **unnormalized** metrics.
+* **Insights:** The comparison between the KDE plots generated here (on unnormalized data) and those in Section 12 (on normalized data) is crucial. KDE distributions on unnormalized data are expected to show very different peaks and dispersions due to the intrinsic scales of each metric, potentially obscuring relationships or creating the illusion of separations where none are significant after normalization. This step reinforces the importance of normalization for fair comparative analysis and for the validity of techniques like Mahalanobis Distance, which depend on the scales and correlations between variables.
 
 ---
 
-## Sezione 13: Misura di Hausdorff (Dati Normalizzati)
+## Section 13: Hausdorff Measure (Normalized Data)
 
-* **Scopo:** Calcolare la **Distanza di Hausdorff multidimensionale** tra periodi artistici consecutivi di Picasso, utilizzando le metriche visive **normalizzate**. Questa misura quantifica la "somiglianza" o "distanza massima" tra due insiemi di punti (periodi artistici) in uno spazio multidimensionale, offrendo un'indicazione della transizione e della distinzione tra stili.
-* **Input:** Il file CSV contenente le metriche normalizzate per ogni opera d'arte (`.\\CSV NORMALIZED\\normalized_metrics_with_details_no_outlier.csv`).
-* **Metodi:**
-    * **Definizione della Funzione Hausdorff Multidimensionale:** Viene implementata una funzione `hausdorff_multidimensional(A, B)` che calcola la distanza di Hausdorff tra due insiemi di punti multidimensionali ($A$ e $B$).
-        * La funzione utilizza la distanza euclidea per calcolare le distanze punto-a-punto tra gli insiemi.
-        * Calcola le due distanze di Hausdorff dirette: $h(A, B)$ (la massima distanza di un punto in A al suo punto più vicino in B) e $h(B, A)$ (la massima distanza di un punto in B al suo punto più vicino in A).
-        * La distanza di Hausdorff finale è il massimo di queste due distanze dirette, rappresentando la distanza "peggiore" tra i due insiemi.
-        * Gestisce il caso di insiemi vuoti, ritornando $0.0$.
-    * **Caricamento e Preparazione Dati:**
-        * Il dataset delle metriche normalizzate viene caricato.
-        * Viene definito un ordine sequenziale per i periodi artistici (`style_order`) per analizzare le transizioni consecutive.
-        * Vengono selezionate le colonne delle metriche numeriche chiave: 'Fractal dimension', 'Entropy', 'Birkhoff measure', 'Euclidean distance'.
-        * Viene eseguita una verifica della presenza delle colonne e una conversione esplicita a tipo numerico. Le righe con valori NaN nelle colonne delle metriche vengono rimosse per garantire la validità dei calcoli.
-    * **Normalizzazione dei Dati:** I dati delle metriche vengono ulteriormente normalizzati su un intervallo $[0, 1]$ usando `MinMaxScaler`. Anche se il file di input è già "normalizzato", questa fase garantisce una coerenza e robustezza del range per i calcoli specifici della distanza di Hausdorff, specialmente se il precedente processo di normalizzazione ha utilizzato un metodo diverso o un intervallo differente.
-    * **Calcolo della Distanza per Coppie Consecutive:**
-        * Il codice itera attraverso le coppie di periodi consecutivi definiti in `style_order`.
-        * Per ogni coppia, estrae i sottoinsiemi di dati corrispondenti alle opere di ciascun periodo.
-        * Chiama la funzione `hausdorff_multidimensional` per calcolare la distanza tra i due sottoinsiemi.
-        * I risultati vengono stampati e raccolti in un DataFrame.
+* **Purpose:** To calculate the **multidimensional Hausdorff Distance** between consecutive artistic periods of Picasso, using **normalized** visual metrics. This measure quantifies the "similarity" or "maximum distance" between two sets of points (artistic periods) in a multidimensional space, offering an indication of transition and distinction between styles.
+* **Input:** The CSV file containing normalized metrics for each artwork (`.\\CSV NORMALIZED\\normalized_metrics_with_details_no_outlier.csv`).
+* **Methods:**
+    * **Definition of Multidimensional Hausdorff Function:** A `hausdorff_multidimensional(A, B)` function is implemented that calculates the Hausdorff distance between two multidimensional sets of points ($A$ and $B$).
+        * The function uses Euclidean distance to calculate point-to-point distances between the sets.
+        * It calculates the two direct Hausdorff distances: $h(A, B)$ (the maximum distance of a point in A to its closest point in B) and $h(B, A)$ (the maximum distance of a point in B to its closest point in A).
+        * The final Hausdorff distance is the maximum of these two direct distances, representing the "worst-case" distance between the two sets.
+        * It handles the case of empty sets, returning $0.0$.
+    * **Data Loading and Preparation:**
+        * The normalized metrics dataset is loaded.
+        * A sequential order for artistic periods (`style_order`) is defined to analyze consecutive transitions.
+        * Key numerical metric columns are selected: 'Fractal dimension', 'Entropy', 'Birkhoff measure', 'Euclidean distance'.
+        * Column presence is verified, and explicit conversion to numeric type is performed. Rows with NaN values in metric columns are removed to ensure calculation validity.
+    * **Data Normalization:** Metric data is further normalized to a $[0, 1]$ range using `MinMaxScaler`. Even if the input file is already "normalized," this step ensures consistency and robustness of the range for specific Hausdorff distance calculations, especially if the previous normalization process used a different method or range.
+    * **Distance Calculation for Consecutive Pairs:**
+        * The code iterates through pairs of consecutive periods defined in `style_order`.
+        * For each pair, it extracts the subsets of data corresponding to the artworks of each period.
+        * It calls the `hausdorff_multidimensional` function to calculate the distance between the two subsets.
+        * Results are printed and collected in a DataFrame.
 * **Output:**
-    * Una stampa tabellare che mostra la Distanza di Hausdorff multidimensionale calcolata per ogni transizione tra periodi artistici consecutivi (e.g., "Early Years" a "Blue Period", "Blue Period" a "Rose Period", ecc.).
-    * Un file CSV (`.\\CSV NORMALIZED\\normalized_hausdorff4D.csv`) contenente i risultati di queste distanze.
-* **Insights:** Questa sezione fornisce una quantificazione diretta della "separazione" tra i diversi periodi stilistici di Picasso nello spazio multidimensionale delle metriche visive normalizzate. Valori più alti della Distanza di Hausdorff indicheranno una maggiore discontinuità o una transizione più netta tra i due stili, suggerendo che le opere di quei periodi occupano regioni più distinte dello spazio delle caratteristiche. Al contrario, valori più bassi potrebbero suggerire una transizione più graduale o una maggiore sovrapposizione tra gli stili. Questi risultati sono cruciali per comprendere l'evoluzione stilistica di Picasso dal punto di vista computazionale.
+    * A tabular printout showing the multidimensional Hausdorff Distance calculated for each transition between consecutive artistic periods (e.g., "Early Years" to "Blue Period", "Blue Period" to "Rose Period", etc.).
+    * A CSV file (`.\\CSV NORMALIZED\\normalized_hausdorff4D.csv`) containing the results of these distances.
+* **Insights:** This section provides a direct quantification of the "separation" between Picasso's different stylistic periods in the multidimensional space of normalized visual metrics. Higher Hausdorff Distance values will indicate greater discontinuity or a sharper transition between the two styles, suggesting that the artworks of those periods occupy more distinct regions of the feature space. Conversely, lower values might suggest a more gradual transition or greater overlap between styles. These results are crucial for understanding Picasso's stylistic evolution from a computational perspective.
 
 ---
 
-## Sezione 13.1: Misura di Hausdorff (Dati Non Normalizzati)
+## Section 13.1: Hausdorff Measure (Unnormalized Data)
 
-* **Scopo:** Calcolare la **Distanza di Hausdorff multidimensionale** tra periodi artistici consecutivi di Picasso, utilizzando le metriche visive **non normalizzate**. Questa sezione funge da controparte alla Sezione 13, per investigare come la mancanza di normalizzazione influenzi la percezione delle distanze e delle transizioni tra gli stili.
-* **Input:** Il file CSV contenente le metriche originali (non normalizzate) per ogni opera d'arte (`.\\CSV\\metrics_with_details_no_outlier.csv`).
-* **Metodi:**
-    * **Definizione della Funzione Hausdorff Multidimensionale:** Viene utilizzata la stessa funzione `hausdorff_multidimensional(A, B)` della Sezione 13, che calcola la distanza di Hausdorff tra due insiemi di punti multidimensionali. La funzione si basa sulla distanza euclidea e considera le due distanze dirette massime tra gli insiemi.
-    * **Caricamento e Preparazione Dati:**
-        * Il dataset originale (non normalizzato) viene caricato.
-        * Viene definito l'ordine sequenziale per i periodi artistici (`style_order`).
-        * Vengono selezionate le colonne delle metriche numeriche chiave: 'Fractal dimension', 'Entropy', 'Birkhoff measure', 'Euclidean distance'.
-        * Viene eseguita una verifica della presenza delle colonne e una conversione esplicita a tipo numerico. Le righe con valori NaN nelle colonne delle metriche vengono rimosse.
-    * **Normalizzazione dei Dati (Importante):** Nonostante l'obiettivo sia analizzare l'impatto dei dati *non normalizzati*, la funzione `hausdorff_multidimensional` (che usa `cdist` con 'euclidean' come metrica) è sensibile alla scala. Pertanto, **all'interno di questa sezione**, i dati delle metriche vengono comunque normalizzati su un intervallo $[0, 1]$ usando `MinMaxScaler` *prima* di calcolare le distanze. Questo è un compromesso tecnico: sebbene si parta da dati "non normalizzati" nel file CSV, il calcolo della distanza di Hausdorff (che è una distanza metrica come la euclidea) spesso richiede dati scalati per evitare che una singola metrica con un range di valori molto ampio domini la distanza complessiva. Il punto cruciale è che il *file di input* non è stato pre-normalizzato come quello della Sezione 13, ma la normalizzazione viene applicata *qui* per il calcolo della Hausdorff.
-    * **Calcolo della Distanza per Coppie Consecutive:**
-        * Il codice itera attraverso le coppie di periodi consecutivi definiti in `style_order`.
-        * Per ogni coppia, estrae i sottoinsiemi di dati corrispondenti alle opere di ciascun periodo.
-        * Chiama la funzione `hausdorff_multidimensional` per calcolare la distanza tra i due sottoinsetti di dati **normalizzati in questo passaggio**.
-        * I risultati vengono stampati e raccolti in un DataFrame.
+* **Purpose:** To calculate the **multidimensional Hausdorff Distance** between consecutive artistic periods of Picasso, using **unnormalized** visual metrics. This section serves as a counterpart to Section 13, to investigate how the lack of normalization affects the perception of distances and transitions between styles.
+* **Input:** The CSV file containing original (unnormalized) metrics for each artwork (`.\\CSV\\metrics_with_details_no_outlier.csv`).
+* **Methods:**
+    * **Definition of Multidimensional Hausdorff Function:** The same `hausdorff_multidimensional(A, B)` function as in Section 13 is used, which calculates the Hausdorff distance between two multidimensional sets of points. The function relies on Euclidean distance and considers the two maximum direct distances between the sets.
+    * **Data Loading and Preparation:**
+        * The original (unnormalized) dataset is loaded.
+        * The sequential order for artistic periods (`style_order`) is defined.
+        * Key numerical metric columns are selected: 'Fractal dimension', 'Entropy', 'Birkhoff measure', 'Euclidean distance'.
+        * Column presence is verified, and explicit conversion to numeric type is performed. Rows with NaN values in metric columns are removed.
+    * **Data Normalization (Important):** Despite the objective being to analyze the impact of *unnormalized* data, the `hausdorff_multidimensional` function (which uses `cdist` with 'euclidean' as metric) is scale-sensitive. Therefore, **within this section**, the metric data is still normalized to a $[0, 1]$ range using `MinMaxScaler` *before* calculating the distances. This is a technical compromise: although starting from "unnormalized" data in the CSV file, calculating Hausdorff distance (which is a metric distance like Euclidean) often requires scaled data to prevent a single metric with a very wide value range from dominating the overall distance. The crucial point is that the *input file* was not pre-normalized like the one in Section 13, but normalization is applied *here* for the Hausdorff calculation.
+    * **Distance Calculation for Consecutive Pairs:**
+        * The code iterates through pairs of consecutive periods defined in `style_order`.
+        * For each pair, it extracts the subsets of data corresponding to the artworks of each period.
+        * It calls the `hausdorff_multidimensional` function to calculate the distance between the two subsets of data **normalized in this step**.
+        * Results are printed and collected in a DataFrame.
 * **Output:**
-    * Una stampa tabellare che mostra la Distanza di Hausdorff multidimensionale calcolata per ogni transizione tra periodi artistici consecutivi.
-    * Un file CSV (`.\\CSV\\hausdorff4D.csv`) contenente i risultati di queste distanze.
-* **Insights:** Il confronto tra i risultati della Distanza di Hausdorff calcolati qui (con normalizzazione applicata *localmente* prima del calcolo) e quelli della Sezione 13 (dove i dati di input erano già normalizzati) è sottile ma importante. Entrambe le sezioni utilizzano dati normalizzati per il calcolo effettivo della distanza di Hausdorff. La principale differenza risiede nel punto di origine della normalizzazione e nella dicitura "non normalizzati" che si riferisce al file CSV di input. Se i risultati sono molto simili, ciò indicherebbe la robustezza del metodo di normalizzazione utilizzato. Tuttavia, la Sezione 13.1, pur normalizzando, si basa su un file CSV che non ha avuto una pre-normalizzazione "globale" come il file utilizzato in Sezione 13. Ciò potrebbe portare a leggere differenze se il processo di pulizia o normalizzazione precedente non è stato identico. L'analisi di questa sezione mira a garantire che, anche partendo da dati grezzi, l'applicazione della normalizzazione prima del calcolo della distanza di Hausdorff sia un passo necessario per ottenere misure significative della separazione stilistica.
+    * A tabular printout showing the multidimensional Hausdorff Distance calculated for each transition between consecutive artistic periods.
+    * A CSV file (`.\\CSV\\hausdorff4D.csv`) containing the results of these distances.
+* **Insights:** The comparison between the Hausdorff Distance results calculated here (with normalization applied *locally* before calculation) and those in Section 13 (where the input data was already normalized) is subtle but important. Both sections use normalized data for the actual Hausdorff distance calculation. The main difference lies in the origin point of normalization and the term "unnormalized" which refers to the input CSV file. If the results are very similar, this would indicate the robustness of the normalization method used. However, Section 13.1, while normalizing, relies on a CSV file that has not undergone a "global" pre-normalization like the file used in Section 13. This could lead to slight differences if the previous cleaning or normalization process was not identical. The analysis in this section aims to ensure that, even starting from raw data, applying normalization before calculating Hausdorff distance is a necessary step to obtain meaningful measures of stylistic separation.
 
 ---
 
-## Sezione 14: Contesto di Adattamento (Dati Normalizzati)
+## Section 14: Contextual Fit (Normalized Data)
 
-* **Scopo:** Calcolare il "Contesto di Adattamento" (`Contextual Fit`) per ciascuna opera d'arte, basandosi sulla Distanza di Mahalanobis calcolata all'interno del proprio periodo stilistico, utilizzando i dati delle metriche visive **normalizzate**. Questa metrica fornisce un'indicazione di quanto bene un'opera si "adatta" alle caratteristiche statistiche del suo stile di appartenenza, con valori più alti che indicano un migliore adattamento. Successivamente, verranno calcolate le statistiche riassuntive (media e deviazione standard) di queste misure per ciascun periodo.
-* **Input:** Il file CSV contenente le metriche normalizzate per ogni opera d'arte (`.\\CSV NORMALIZED\\normalized_metrics_with_details_no_outlier.csv`).
-* **Metodi:**
-    * **Caricamento Dati:** Il dataset delle metriche normalizzate viene caricato, prestando attenzione al separatore decimale (virgola).
-    * **Definizione delle Caratteristiche Numeriche:** Vengono identificate le quattro metriche chiave ('Fractal dimension', 'Entropy', 'Birkhoff measure', 'Euclidean distance'). Viene eseguita una robusta validazione delle colonne, convertendole in numerico e rimuovendo le righe con valori NaN in queste colonne per garantire l'integrità dei calcoli.
-    * **Calcolo della Distanza di Mahalanobis:**
-        * Il DataFrame viene raggruppato per la colonna 'Period'.
-        * Per ogni periodo:
-            * Viene calcolato il centroide (media) delle metriche per quel periodo.
-            * Viene calcolata la matrice di covarianza delle metriche.
-            * Viene eseguito un controllo per la singolarità della matrice di covarianza (determinante zero) e, se necessario, viene aggiunto un piccolo termine diagonale (jitter) per renderla invertibile.
-            * Viene calcolata la matrice di covarianza inversa.
-            * Per ogni opera d'arte all'interno del periodo, viene calcolata la distanza di Mahalanobis tra l'opera stessa e il centroide del suo periodo, utilizzando la matrice di covarianza inversa specifica del periodo.
-            * Le distanze calcolate vengono mappate all'indice originale del DataFrame nella nuova colonna 'Mahalanobis_Distance'.
-    * **Calcolo del "Contesto di Adattamento" (`Contextual_Fit`):**
-        * Viene creata una nuova colonna 'Contextual_Fit'.
-        * Per ogni opera, il "Contesto di Adattamento" viene calcolato come l'inverso della sua 'Mahalanobis_Distance' (cioè, $1 / (\text{Mahalanobis_Distance})$). Un piccolo valore epsilon viene implicitamente considerato o gestito per prevenire divisioni per zero o valori infiniti per distanze vicine allo zero (anche se il codice gestisce esplicitamente il caso di distanza 0 impostando `np.inf`). Valori NaN nella distanza di Mahalanobis risultano in NaN anche per il Contesto di Adattamento.
-    * **Salvataggio dei Dati Intermedi:** Il DataFrame completo con le nuove colonne 'Mahalanobis_Distance' e 'Contextual_Fit' viene salvato in un nuovo file CSV (`.\\CSV NORMALIZED\\normalized_contextual_fit.csv`).
-    * **Calcolo e Salvataggio delle Statistiche Riassuntive:**
-        * Vengono calcolate la media e la deviazione standard della 'Mahalanobis_Distance' e del 'Contextual_Fit' per ogni 'Period'.
-        * Le colonne del DataFrame delle statistiche vengono appiattite per una migliore leggibilità.
-        * Queste statistiche aggregate vengono salvate in un altro file CSV (`.\\CSV NORMALIZED\\normalized_mahalanobis_contextual_fit.csv`).
+* **Purpose:** To calculate the "Contextual Fit" for each artwork, based on the Mahalanobis Distance calculated within its own stylistic period, using **normalized** visual metric data. This metric provides an indication of how well an artwork "fits" the statistical characteristics of its belonging style, with higher values indicating a better fit. Subsequently, summary statistics (mean and standard deviation) of these measures will be calculated for each period.
+* **Input:** The CSV file containing normalized metrics for each artwork (`.\\CSV NORMALIZED\\normalized_metrics_with_details_no_outlier.csv`).
+* **Methods:**
+    * **Data Loading:** The normalized metrics dataset is loaded, paying attention to the decimal separator (comma).
+    * **Numerical Feature Definition:** The four key metrics ('Fractal dimension', 'Entropy', 'Birkhoff measure', 'Euclidean distance') are identified. Robust column validation is performed, converting them to numeric and removing rows with NaN values in these columns to ensure calculation integrity.
+    * **Mahalanobis Distance Calculation:**
+        * The DataFrame is grouped by the 'Period' column.
+        * For each period:
+            * The centroid (mean) of the metrics for that period is calculated.
+            * The covariance matrix of the metrics is calculated.
+            * A check for covariance matrix singularity (zero determinant) is performed, and if necessary, a small diagonal term (jitter) is added to make it invertible.
+            * The inverse covariance matrix is calculated.
+            * For each artwork within the period, the Mahalanobis distance between the artwork itself and the centroid of its period is calculated, using the period-specific inverse covariance matrix.
+            * The calculated distances are mapped back to the original DataFrame's index in the new 'Mahalanobis_Distance' column.
+    * **Contextual Fit Calculation:**
+        * A new column 'Contextual_Fit' is created.
+        * For each artwork, the "Contextual Fit" is calculated as the inverse of its 'Mahalanobis_Distance' (i.e., $1 / (\text{Mahalanobis_Distance})$). A small epsilon value is implicitly considered or handled to prevent division by zero or infinite values for distances close to zero (although the code explicitly handles the case of distance 0 by setting `np.inf`). NaN values in Mahalanobis distance also result in NaN for Contextual Fit.
+    * **Saving Intermediate Data:** The complete DataFrame with the new 'Mahalanobis_Distance' and 'Contextual_Fit' columns is saved to a new CSV file (`.\\CSV NORMALIZED\\normalized_contextual_fit.csv`).
+    * **Calculation and Saving of Summary Statistics:**
+        * The mean and standard deviation of 'Mahalanobis_Distance' and 'Contextual_Fit' are calculated for each 'Period'.
+        * The columns of the statistics DataFrame are flattened for better readability.
+        * These aggregated statistics are saved to another CSV file (`.\\CSV NORMALIZED\\normalized_mahalanobis_contextual_fit.csv`).
 * **Output:**
-    * Il DataFrame originale esteso con le colonne 'Mahalanobis_Distance' e 'Contextual_Fit', visualizzato le prime 10 righe.
-    * Un file CSV (`.\\CSV NORMALIZED\\normalized_contextual_fit.csv`) contenente l'intero DataFrame aggiornato con le nuove metriche per ogni opera.
-    * Una stampa tabellare delle medie e deviazioni standard di 'Mahalanobis_Distance' e 'Contextual_Fit' per ciascun periodo.
-    * Un file CSV (`.\\CSV NORMALIZED\\normalized_mahalanobis_contextual_fit.csv`) contenente queste statistiche aggregate per periodo.
-* **Insights:** Questa sezione fornisce una quantificazione cruciale dell'omogeneità stilistica all'interno di ciascun periodo. Un valore elevato di "Contesto di Adattamento" per un'opera indica che essa è molto rappresentativa del suo periodo. Analizzando le medie e le deviazioni standard di queste metriche per ogni periodo, è possibile identificare quali periodi sono più "compatti" (opere molto simili tra loro) e quali sono più "diversi" o "fluidi" (opere più disperse attorno al centroide), fornendo indicazioni sulla rigidità delle convenzioni stilistiche in diversi momenti della carriera di Picasso. Questi dati sono fondamentali per la discussione sull'evoluzione stilistica e la coerenza dei periodi.
+    * The original DataFrame extended with 'Mahalanobis_Distance' and 'Contextual_Fit' columns, with the first 10 rows displayed.
+    * A CSV file (`.\\CSV NORMALIZED\\normalized_contextual_fit.csv`) containing the entire updated DataFrame with the new metrics for each artwork.
+    * A tabular printout of the means and standard deviations of 'Mahalanobis_Distance' and 'Contextual_Fit' for each period.
+    * A CSV file (`.\\CSV NORMALIZED\\normalized_mahalanobis_contextual_fit.csv`) containing these aggregated statistics per period.
+* **Insights:** This section provides crucial quantification of stylistic homogeneity within each period. A high "Contextual Fit" value for an artwork indicates that it is very representative of its period. By analyzing the means and standard deviations of these metrics for each period, it's possible to identify which periods are more "compact" (artworks very similar to each other) and which are more "diverse" or "fluid" (artworks more dispersed around the centroid), providing insights into the rigidity of stylistic conventions at different times in Picasso's career. This data is fundamental for discussing stylistic evolution and period coherence.
 
 ---
 
-## Sezione 14.1: Contesto di Adattamento (Dati Non Normalizzati)
+## Section 14.1: Contextual Fit (Unnormalized Data)
 
-* **Scopo:** Calcolare il "Contesto di Adattamento" (`Contextual Fit`) per ciascuna opera d'arte, basandosi sulla Distanza di Mahalanobis calcolata all'interno del proprio periodo stilistico, utilizzando i dati delle metriche visive **non normalizzate**. Questa sezione confronta i risultati con la Sezione 14, evidenziando l'impatto della normalizzazione sulla Distanza di Mahalanobis e, di conseguenza, sul "Contesto di Adattamento".
-* **Input:** Il file CSV contenente le metriche originali (non normalizzate) per ogni opera d'arte (`.\\CSV\\metrics_with_details_no_outlier.csv`).
-* **Metodi:**
-    * **Caricamento Dati:** Il dataset delle metriche originali viene caricato, prestando attenzione al separatore decimale.
-    * **Definizione delle Caratteristiche Numeriche:** Vengono identificate le quattro metriche chiave. Viene eseguita una robusta validazione delle colonne, convertendole in numerico e rimuovendo le righe con valori NaN.
-    * **Calcolo della Distanza di Mahalanobis:**
-        * Il DataFrame viene raggruppato per la colonna 'Period'.
-        * Per ogni periodo:
-            * Viene calcolato il centroide (media) delle metriche.
-            * Viene calcolata la matrice di covarianza delle metriche.
-            * Viene gestita la singolarità della matrice di covarianza aggiungendo un piccolo termine diagonale (jitter) per renderla invertibile.
-            * Viene calcolata la matrice di covarianza inversa.
-            * Per ogni opera d'arte all'interno del periodo, viene calcolata la distanza di Mahalanobis tra l'opera stessa e il centroide del suo periodo, utilizzando la matrice di covarianza inversa specifica del periodo. **È cruciale notare che qui la Distanza di Mahalanobis viene calcolata direttamente sui valori delle metriche originali (non normalizzate) caricate dal CSV.** Questo è il punto di divergenza principale rispetto alla Sezione 14.
-            * Le distanze calcolate vengono mappate all'indice originale del DataFrame nella nuova colonna 'Mahalanobis_Distance'.
-    * **Calcolo del "Contesto di Adattamento" (`Contextual_Fit`):**
-        * Viene creata una nuova colonna 'Contextual_Fit'.
-        * Per ogni opera, il "Contesto di Adattamento" viene calcolato come l'inverso della sua 'Mahalanobis_Distance'.
-    * **Salvataggio dei Dati Intermedi:** Il DataFrame completo con le nuove colonne 'Mahalanobis_Distance' e 'Contextual_Fit' viene salvato in un nuovo file CSV (`.\\CSV\\contextual_fit.csv`).
-    * **Calcolo e Salvataggio delle Statistiche Riassuntive:**
-        * Vengono calcolate la media e la deviazione standard della 'Mahalanobis_Distance' e del 'Contextual_Fit' per ogni 'Period'.
-        * Le colonne del DataFrame delle statistiche vengono appiattite.
-        * Queste statistiche aggregate vengono salvate in un altro file CSV (`.\\CSV\\mahalanobis_contextual_fit.csv`).
+* **Purpose:** To calculate the "Contextual Fit" for each artwork, based on the Mahalanobis Distance calculated within its own stylistic period, using **unnormalized** visual metric data. This section compares the results with Section 14, highlighting the impact of normalization on Mahalanobis Distance and, consequently, on "Contextual Fit".
+* **Input:** The CSV file containing original (unnormalized) metrics for each artwork (`.\\CSV\\metrics_with_details_no_outlier.csv`).
+* **Methods:**
+    * **Data Loading:** The original metrics dataset is loaded, paying attention to the decimal separator.
+    * **Numerical Feature Definition:** The four key metrics are identified. Robust column validation is performed, converting them to numeric and removing rows with NaN values.
+    * **Mahalanobis Distance Calculation:**
+        * The DataFrame is grouped by the 'Period' column.
+        * For each period:
+            * The centroid (mean) of the metrics is calculated.
+            * The covariance matrix of the metrics is calculated.
+            * Covariance matrix singularity is handled by adding a small diagonal term (jitter) to make it invertible.
+            * The inverse covariance matrix is calculated.
+            * For each artwork within the period, the Mahalanobis distance between the artwork itself and the centroid of its period is calculated, using the period-specific inverse covariance matrix. **It is crucial to note that here the Mahalanobis Distance is calculated directly on the original (unnormalized) metric values loaded from the CSV.** This is the main divergence point from Section 14.
+            * The calculated distances are mapped back to the original DataFrame's index in the new 'Mahalanobis_Distance' column.
+    * **Contextual Fit Calculation:**
+        * A new column 'Contextual_Fit' is created.
+        * For each artwork, the "Contextual Fit" is calculated as the inverse of its 'Mahalanobis_Distance'.
+    * **Saving Intermediate Data:** The complete DataFrame with the new 'Mahalanobis_Distance' and 'Contextual_Fit' columns is saved to a new CSV file (`.\\CSV\\contextual_fit.csv`).
+    * **Calculation and Saving of Summary Statistics:**
+        * The mean and standard deviation of 'Mahalanobis_Distance' and 'Contextual_Fit' are calculated for each 'Period'.
+        * The columns of the statistics DataFrame are flattened.
+        * These aggregated statistics are saved to another CSV file (`.\\CSV\\mahalanobis_contextual_fit.csv`).
 * **Output:**
-    * Il DataFrame originale esteso con le colonne 'Mahalanobis_Distance' e 'Contextual_Fit', visualizzato le prime 10 righe.
-    * Un file CSV (`.\\CSV\\contextual_fit.csv`) contenente l'intero DataFrame aggiornato con le nuove metriche per ogni opera.
-    * Una stampa tabellare delle medie e deviazioni standard di 'Mahalanobis_Distance' e 'Contextual_Fit' per ciascun periodo.
-    * Un file CSV (`.\\CSV\\mahalanobis_contextual_fit.csv`) contenente queste statistiche aggregate per periodo.
-* **Insights:** Questa sezione è fondamentale per dimostrare l'impatto della normalizzazione sulla Distanza di Mahalanobis e sulla metrica del "Contesto di Adattamento". Senza normalizzazione, le metriche con range di valori più ampi (ad esempio, 'Euclidean distance' se i suoi valori sono molto più grandi degli altri) tenderanno a dominare il calcolo della distanza, potenzialmente mascherando i contributi delle altre metriche e portando a un "Contesto di Adattamento" meno significativo. Ci si aspetta che i valori di 'Mahalanobis_Distance' e 'Contextual_Fit' siano molto diversi rispetto alla Sezione 14, e che l'interpretazione dei periodi come più o meno "compatti" possa cambiare drasticamente. Questo sottolinea l'importanza della normalizzazione come passo di pre-elaborazione critico per l'analisi multivariata.
+    * The original DataFrame extended with 'Mahalanobis_Distance' and 'Contextual_Fit' columns, with the first 10 rows displayed.
+    * A CSV file (`.\\CSV\\contextual_fit.csv`) containing the entire updated DataFrame with the new metrics for each artwork.
+    * A tabular printout of the means and standard deviations of 'Mahalanobis_Distance' and 'Contextual_Fit' for each period.
+    * A CSV file (`.\\CSV\\mahalanobis_contextual_fit.csv`) containing these aggregated statistics per period.
+* **Insights:** This section is fundamental for demonstrating the impact of normalization on Mahalanobis Distance and the "Contextual Fit" metric. Without normalization, metrics with wider value ranges (e.g., 'Euclidean distance' if its values are much larger than others) will tend to dominate the distance calculation, potentially masking the contributions of other metrics and leading to a less significant "Contextual Fit." It is expected that the values of 'Mahalanobis_Distance' and 'Contextual_Fit' will be very different from Section 14, and the interpretation of periods as more or less "compact" may change drastically. This underscores the importance of normalization as a critical pre-processing step for multivariate analysis.
 
 ---
 
-## Sezione 15: Mappe di Biforcazione (Dati Normalizzati)
+## Section 15: Bifurcation Maps (Normalized Data)
 
-* **Scopo:** Visualizzare la distribuzione della "Dimensione Frattale" delle opere di Picasso in relazione ai suoi periodi artistici e agli anni di creazione, utilizzando i dati delle metriche visive **normalizzate**. Queste "Mappe di Biforcazione" aiutano a identificare le transizioni stilistiche e la variabilità della dimensione frattale all'interno e tra i periodi.
-* **Input:** Il file CSV contenente le metriche normalizzate per ogni opera d'arte (`.\\CSV NORMALIZED\\normalized_metrics_with_details_no_outlier.csv`).
-* **Metodi:**
-    * **Caricamento Dati:** Il dataset delle metriche normalizzate viene caricato. Viene gestito il caso di `FileNotFoundError`.
-    * **Definizione e Ordine dei Periodi:** Viene definito l'ordine cronologico dei periodi artistici di Picasso (`ordered_styles`). La colonna 'Period' del DataFrame viene convertita in un tipo categorico con questo ordine per garantire che i grafici siano visualizzati correttamente in sequenza temporale.
-    * **Generazione di Stripplot (Mappe di Biforcazione):** Per ciascun grafico, viene utilizzato un `sns.stripplot`. Uno stripplot è una buona scelta per visualizzare la distribuzione di punti dati unidimensionali per diverse categorie, permettendo di vedere la densità e i singoli punti. Il `jitter` aggiunge un leggero spostamento casuale ai punti per evitare sovrapposizioni e mostrare la densità dei dati.
-        * **"Fractal Dimension" vs. "Artistic Period" (Orizzontale):**
-            * Asse Y: 'Periodo Artistico' (con l'ordine definito).
-            * Asse X: 'Dimensione Frattale'.
-            * Orientamento: Orizzontale (`orient='h'`).
-            * Il grafico visualizza la dispersione della dimensione frattale per ogni periodo.
-            * Salvato come `.\\PLOT NORMALIZED\\BIFURCATION MAP\\fractal_dimension_by_artistic_period_h.png`.
-        * **"Fractal Dimension" vs. "Artistic Period" (Verticale):**
-            * Asse X: 'Periodo Artistico' (con l'ordine definito).
-            * Asse Y: 'Dimensione Frattale'.
-            * Orientamento: Verticale.
-            * Etichette dell'asse X ruotate per leggibilità.
-            * Salvato come `.\\PLOT NORMALIZED\\BIFURCATION MAP\\fractal_dimension_by_artistic_period_v.png`.
-        * **"Fractal Dimension" vs. "Year" (Orizzontale):**
-            * Asse Y: 'Anno di creazione'.
-            * Asse X: 'Dimensione Frattale'.
-            * Orientamento: Orizzontale (`orient='h'`).
-            * Il grafico mostra l'evoluzione della dimensione frattale nel tempo.
-            * Salvato come `.\\PLOT NORMALIZED\\BIFURCATION MAP\\fractal_dimension_by_year_horizontal.png`.
-        * **"Fractal Dimension" vs. "Year" (Verticale):**
-            * Asse X: 'Anno di creazione'.
-            * Asse Y: 'Dimensione Frattale'.
-            * Orientamento: Verticale (`orient='v'`).
-            * Etichette dell'asse X ruotate per leggibilità.
-            * Salvato come `.\\PLOT NORMALIZED\\BIFURCATION MAP\\fractal_dimension_by_year_vertical.png`.
-    * **Salvataggio dei Grafici:** Tutti i grafici vengono salvati in un'apposita sottodirectory `.\\PLOT NORMALIZED\\BIFURCATION MAP\\`.
-* **Output:** Quattro file immagine PNG, ciascuno raffigurante una mappa di biforcazione della dimensione frattale in relazione ai periodi artistici o agli anni di creazione, in orientamenti orizzontali e verticali.
-* **Insights:** Le mappe di biforcazione offrono una visualizzazione dettagliata e intuitiva delle distribuzioni dei valori della dimensione frattale. Consentono di osservare:
-    * **Coesione/Variabilità all'interno dei Periodi:** Se i punti per un dato periodo sono raggruppati strettamente, indica una maggiore coerenza stilistica per quella metrica. Se sono molto sparsi, suggerisce una maggiore variabilità.
-    * **Transizioni tra i Periodi:** Come cambiano i range e le densità dei punti tra periodi consecutivi. Questo può evidenziare "biforcazioni" o cambiamenti improvvisi nella distribuzione della dimensione frattale, suggerendo passaggi stilistici distinti.
-    * **Tendenze Temporali:** I grafici per anno possono rivelare un'evoluzione graduale o brusca della dimensione frattale nel corso della carriera di Picasso, potenzialmente correlata all'introduzione di nuovi stili o tecniche.
-    * Poiché i dati sono normalizzati, la comparazione tra i periodi è più equa e non è influenzata dalle differenze di scala originali delle metriche.
-
----
-
-## Sezione 15.1: Mappe di Biforcazione (Dati Non Normalizzati)
-
-* **Scopo:** Visualizzare la distribuzione della "Dimensione Frattale" delle opere di Picasso in relazione ai suoi periodi artistici e agli anni di creazione, utilizzando i dati delle metriche visive **non normalizzate**. Questa sezione replica l'analisi della Sezione 15 ma con i dati originali, permettendo un confronto diretto sull'impatto della normalizzazione sulle visualizzazioni.
-* **Input:** Il file CSV contenente le metriche originali (non normalizzate) per ogni opera d'arte (`.\\CSV\\metrics_with_details_no_outlier.csv`).
-* **Metodi:**
-    * **Caricamento Dati:** Il dataset delle metriche originali viene caricato. Viene gestita l'assenza del file.
-    * **Definizione e Ordine dei Periodi:** Viene definito l'ordine cronologico dei periodi artistici (`ordered_styles`). La colonna 'Period' del DataFrame viene convertita in un tipo categorico con questo ordine per garantire una visualizzazione cronologica.
-    * **Generazione di Stripplot (Mappe di Biforcazione):** Per ciascun grafico, viene utilizzato un `sns.stripplot`, che è ideale per mostrare la distribuzione di punti dati unidimensionali per diverse categorie, rivelando la densità e la posizione dei singoli punti. Il `jitter` viene applicato per sparpagliare i punti sovrapposti.
-        * **"Fractal Dimension" vs. "Artistic Period" (Orizzontale):**
-            * Asse Y: 'Periodo Artistico'.
-            * Asse X: 'Dimensione Frattale'.
-            * Orientamento: Orizzontale (`orient='h'`).
-            * Salvataggio: `.\\PLOT\\BIFURCATION MAP\\fractal_dimension_by_artistic_period_h.png`.
-        * **"Fractal Dimension" vs. "Artistic Period" (Verticale):**
-            * Asse X: 'Periodo Artistico'.
-            * Asse Y: 'Dimensione Frattale'.
-            * Orientamento: Verticale.
-            * Le etichette dell'asse X sono ruotate per una migliore leggibilità.
-            * Salvataggio: `.\\PLOT\\BIFURCATION MAP\\fractal_dimension_by_artistic_period_v.png`.
-        * **"Fractal Dimension" vs. "Year" (Orizzontale):**
-            * Asse Y: 'Anno di creazione'.
-            * Asse X: 'Dimensione Frattale'.
-            * Orientamento: Orizzontale (`orient='h'`).
-            * Salvataggio: `.\\PLOT\\BIFURCATION MAP\\fractal_dimension_by_year_horizontal.png`.
-        * **"Fractal Dimension" vs. "Year" (Verticale):**
-            * Asse X: 'Anno di creazione'.
-            * Asse Y: 'Dimensione Frattale'.
-            * Orientamento: Verticale (`orient='v'`).
-            * Le etichette dell'asse X sono ruotate per leggibilità.
-            * Salvataggio: `.\\PLOT\\BIFURCATION MAP\\fractal_dimension_by_year_vertical.png`.
-    * **Salvataggio dei Grafici:** Tutti i grafici vengono salvati in una sottodirectory dedicata `.\\PLOT\\BIFURCATION MAP\\`, distinta da quella usata per i dati normalizzati.
-* **Output:** Quattro file immagine PNG, ciascuno rappresentante una mappa di biforcazione della dimensione frattale in rapporto ai periodi artistici o agli anni di creazione, in orientamenti orizzontali e verticali, basati su **dati non normalizzati**.
-* **Insights:** Il confronto visivo tra le mappe di biforcazione di questa sezione (dati non normalizzati) e quelle della Sezione 15 (dati normalizzati) è cruciale. Si prevede che i grafici sui dati non normalizzati possano mostrare intervalli di valori molto diversi, potenzialmente influenzati dalla scala intrinseca della dimensione frattale e non dalla sua variazione relativa. Questo confronto diretto aiuterà a capire come la normalizzazione incida sulla percezione della variabilità e delle transizioni tra i periodi, e a rafforzare l'argomentazione a favore dell'uso di dati normalizzati per analisi comparative significative tra metriche.
+* **Purpose:** To visualize the distribution of Picasso's "Fractal Dimension" in relation to his artistic periods and creation years, using **normalized** visual metric data. These "Bifurcation Maps" help identify stylistic transitions and the variability of fractal dimension within and between periods.
+* **Input:** The CSV file containing normalized metrics for each artwork (`.\\CSV NORMALIZED\\normalized_metrics_with_details_no_outlier.csv`).
+* **Methods:**
+    * **Data Loading:** The normalized metrics dataset is loaded. `FileNotFoundError` is handled.
+    * **Period Definition and Order:** The chronological order of Picasso's artistic periods (`ordered_styles`) is defined. The 'Period' column of the DataFrame is converted to a categorical type with this order to ensure graphs are displayed correctly in temporal sequence.
+    * **Stripplot Generation (Bifurcation Maps):** An `sns.stripplot` is used for each plot. A stripplot is a good choice for visualizing the distribution of one-dimensional data points for different categories, allowing to see data density and individual points. `jitter` adds a slight random displacement to points to prevent overlap and show data density.
+        * **"Fractal Dimension" vs. "Artistic Period" (Horizontal):**
+            * Y-axis: 'Artistic Period' (with the defined order).
+            * X-axis: 'Fractal Dimension'.
+            * Orientation: Horizontal (`orient='h'`).
+            * The plot visualizes the spread of fractal dimension for each period.
+            * Saved as `.\\PLOT NORMALIZED\\BIFURCATION MAP\\fractal_dimension_by_artistic_period_h.png`.
+        * **"Fractal Dimension" vs. "Artistic Period" (Vertical):**
+            * X-axis: 'Artistic Period' (with the defined order).
+            * Y-axis: 'Fractal Dimension'.
+            * Orientation: Vertical.
+            * X-axis labels rotated for readability.
+            * Saved as `.\\PLOT NORMALIZED\\BIFURCATION MAP\\fractal_dimension_by_artistic_period_v.png`.
+        * **"Fractal Dimension" vs. "Year" (Horizontal):**
+            * Y-axis: 'Year of creation'.
+            * X-axis: 'Fractal Dimension'.
+            * Orientation: Horizontal (`orient='h'`).
+            * The plot shows the evolution of fractal dimension over time.
+            * Saved as `.\\PLOT NORMALIZED\\BIFURCATION MAP\\fractal_dimension_by_year_horizontal.png`.
+        * **"Fractal Dimension" vs. "Year" (Vertical):**
+            * X-axis: 'Year of creation'.
+            * Y-axis: 'Fractal Dimension'.
+            * Orientation: Vertical (`orient='v'`).
+            * X-axis labels rotated for readability.
+            * Saved as `.\\PLOT NORMALIZED\\BIFURCATION MAP\\fractal_dimension_by_year_vertical.png`.
+    * **Saving Plots:** All plots are saved in a dedicated subdirectory `.\\PLOT NORMALIZED\\BIFURCATION MAP\\`.
+* **Output:** Four PNG image files, each depicting a bifurcation map of fractal dimension in relation to artistic periods or creation years, in horizontal and vertical orientations.
+* **Insights:** Bifurcation maps offer a detailed and intuitive visualization of fractal dimension value distributions. They allow observing:
+    * **Cohesion/Variability within Periods:** If points for a given period are tightly clustered, it indicates greater stylistic consistency for that metric. If they are widely scattered, it suggests greater variability.
+    * **Transitions between Periods:** How the ranges and densities of points change between consecutive periods. This can highlight "bifurcations" or sudden shifts in the fractal dimension distribution, suggesting distinct stylistic passages.
+    * **Temporal Trends:** Plots by year can reveal a gradual or abrupt evolution of fractal dimension throughout Picasso's career, potentially correlated with the introduction of new styles or techniques.
+    * Since data is normalized, comparison between periods is fairer and not influenced by original metric scale differences.
 
 ---
 
-## Sezione 16: Rilevamento degli Attrattori
+## Section 15.1: Bifurcation Maps (Unnormalized Data)
 
-* **Scopo:** Questa sezione mira a identificare i "cluster" o "attrattori" nello spazio multidimensionale delle metriche visive di Picasso (Dimensione Frattale, Entropia, Misura di Birkhoff, Distanza Euclidea). Questi attrattori rappresentano configurazioni morfologiche e strutturali ricorrenti o prevalenti nelle sue opere, indipendentemente dal periodo stilistico formalmente assegnato. L'approccio si basa sull'algoritmo di clustering **Mean-Shift**, seguito da visualizzazioni tramite PCA, t-SNE e UMAP per esplorare la struttura dei dati e infine un'analisi delle distribuzioni delle metriche per cluster.
-* **Input:** Il file CSV `normalized_metrics.csv` contenente le metriche visive normalizzate per ciascuna opera d'arte.
-* **Metodi:**
-    * **Caricamento e Preparazione Dati:**
-        * Il dataset viene caricato.
-        * Le colonne delle metriche ("Fractal dimension", "Entropy", "Birkhoff measure", "Euclidean distance") vengono pulite da eventuali valori non numerici e convertite in tipo `float`.
-        * Viene creato un array `X` contenente solo i valori delle quattro metriche per il clustering.
-    * **Clustering Mean-Shift:**
-        * Viene stimata una **bandwidth adattiva** per l'algoritmo Mean-Shift. La bandwidth è un parametro cruciale che determina la scala di rilevamento dei cluster. Un valore di `0.39 * median_bw` viene utilizzato come specificato, suggerendo un approccio leggermente più permissivo nella definizione dei cluster rispetto a una bandwidth mediana pura.
-        * L'algoritmo Mean-Shift viene applicato ai dati `X`. Questo algoritmo non richiede il numero predefinito di cluster e li identifica autonomamente basandosi sulla densità dei punti dati.
-        * Le etichette dei cluster (`labels`) assegnate a ciascun punto dati vengono aggiunte al DataFrame originale in una nuova colonna 'Cluster'.
-        * Viene stampato il numero di cluster trovati.
-    * **Analisi e Visualizzazione dei Cluster:**
-        * **Riduzione della Dimensionalità (PCA):** Viene applicata la Principal Component Analysis (PCA) per ridurre le quattro dimensioni delle metriche a due componenti principali (`X_pca`), facilitando la visualizzazione.
-        * **Scatter Plot PCA:** Viene generato uno scatter plot dei dati proiettati su PCA 1 e PCA 2, con i punti colorati in base al cluster assegnato da Mean-Shift. Questo grafico aiuta a visualizzare la separazione dei cluster nello spazio delle componenti principali.
-        * **Statistiche per Cluster:** Vengono calcolate e stampate le medie delle quattro metriche per ciascun cluster identificato. Questo fornisce una caratterizzazione numerica di ogni attrattore.
-        * **Bar Plot delle Medie per Metrica e Cluster:** Vengono generati bar plot separati per ciascuna delle quattro metriche, mostrando il valore medio di quella metrica per ogni cluster. Questo aiuta a comprendere quali metriche definiscono meglio ciascun cluster.
-        * **Bar Plot delle Medie Scalate per Metrica e Cluster:** Le medie delle metriche per ogni cluster vengono ulteriormente scalate (normalizzate tra 0 e 1) utilizzando `MinMaxScaler`. Questo permette un confronto diretto dell'importanza relativa di ciascuna metrica all'interno di un cluster, visualizzato in un unico bar plot raggruppato per cluster e metrica.
-        * **Riduzione della Dimensionalità (t-SNE):** Viene applicata t-Distributed Stochastic Neighbor Embedding (t-SNE) per ridurre i dati a due dimensioni (`X_tsne`). t-SNE è particolarmente efficace nel preservare le relazioni di prossimità locali e nel visualizzare la struttura intrinseca dei dati in spazi ad alta dimensionalità.
-        * **Scatter Plot t-SNE:** Viene creato uno scatter plot dei dati proiettati da t-SNE, colorato per cluster. Questo grafico offre una visualizzazione alternativa alla PCA, spesso rivelando raggruppamenti più distinti se i cluster hanno forme complesse.
-        * **Riduzione della Dimensionalità (UMAP):** Viene applicata Uniform Manifold Approximation and Projection (UMAP) per ridurre i dati a due dimensioni (`embedding`). UMAP è simile a t-SNE ma spesso più veloce e più adatta a dataset di grandi dimensioni, cercando di preservare sia la struttura locale che globale.
-        * **Scatter Plot UMAP:** Viene generato uno scatter plot dei dati proiettati da UMAP, colorato per cluster. Questo grafico fornisce un'ulteriore prospettiva sulla disposizione dei cluster nello spazio delle caratteristiche.
-        * **Mappa di Biforcazione "Fractal Dimension" per Cluster:** Viene generato uno stripplot che visualizza la distribuzione dei valori della "Dimensione Frattale" per ogni cluster. Questo grafico agisce come una "mappa di biforcazione", mostrando la dispersione della metrica all'interno di ogni attrattore e le transizioni tra essi.
+* **Purpose:** To visualize the distribution of Picasso's "Fractal Dimension" in relation to his artistic periods and years of creation, using **unnormalized** visual metric data. This section replicates the analysis of Section 15 but with the original data, allowing a direct comparison of the impact of normalization on the visualizations.
+* **Input:** The CSV file containing the original (unnormalized) metrics for each artwork (`.\\CSV\\metrics_with_details_no_outlier.csv`).
+* **Methods:**
+    * **Data Loading:** The original metrics dataset is loaded. File absence is handled.
+    * **Period Definition and Order:** The chronological order of artistic periods (`ordered_styles`) is defined. The 'Period' column of the DataFrame is converted to a categorical type with this order to ensure chronological visualization.
+    * **Stripplot Generation (Bifurcation Maps):** For each plot, an `sns.stripplot` is used, which is ideal for showing the distribution of one-dimensional data points for different categories, revealing density and individual point positions. `Jitter` is applied to spread overlapping points.
+        * **"Fractal Dimension" vs. "Artistic Period" (Horizontal):**
+            * Y-axis: 'Artistic Period'.
+            * X-axis: 'Fractal Dimension'.
+            * Orientation: Horizontal (`orient='h'`).
+            * Saving: `.\\PLOT\\BIFURCATION MAP\\fractal_dimension_by_artistic_period_h.png`.
+        * **"Fractal Dimension" vs. "Artistic Period" (Vertical):**
+            * X-axis: 'Artistic Period'.
+            * Y-axis: 'Fractal Dimension'.
+            * Orientation: Vertical.
+            * X-axis labels are rotated for better readability.
+            * Saving: `.\\PLOT\\BIFURCATION MAP\\fractal_dimension_by_artistic_period_v.png`.
+        * **"Fractal Dimension" vs. "Year" (Horizontal):**
+            * Y-axis: 'Year of creation'.
+            * X-axis: 'Fractal Dimension'.
+            * Orientation: Horizontal (`orient='h'`).
+            * Saving: `.\\PLOT\\BIFURCATION MAP\\fractal_dimension_by_year_horizontal.png`.
+        * **"Fractal Dimension" vs. "Year" (Vertical):**
+            * X-axis: 'Year of creation'.
+            * Y-axis: 'Fractal Dimension'.
+            * Orientation: Vertical (`orient='v'`).
+            * X-axis labels are rotated for readability.
+            * Saving: `.\\PLOT\\BIFURCATION MAP\\fractal_dimension_by_year_vertical.png`.
+    * **Saving Plots:** All plots are saved in a dedicated subdirectory `.\\PLOT\\BIFURCATION MAP\\`, distinct from the one used for normalized data.
+* **Output:** Four PNG image files, each representing a bifurcation map of fractal dimension in relation to artistic periods or years of creation, in horizontal and vertical orientations, based on **unnormalized data**.
+* **Insights:** The visual comparison between the bifurcation maps in this section (unnormalized data) and those in Section 15 (normalized data) is crucial. It is expected that the graphs on unnormalized data may show very different value ranges, potentially influenced by the intrinsic scale of fractal dimension and not by its relative variation. This direct comparison will help understand how normalization affects the perception of variability and transitions between periods, and reinforce the argument for using normalized data for meaningful comparative analysis between metrics.
+
+---
+
+## Section 16: Attractor Detection
+
+* **Purpose:** This section aims to identify "clusters" or "attractors" in the multidimensional space of Picasso's visual metrics (Fractal Dimension, Entropy, Birkhoff Measure, Euclidean Distance). These attractors represent recurrent or prevalent morphological and structural configurations in his artworks, regardless of the formally assigned stylistic period. The approach is based on the **Mean-Shift** clustering algorithm, followed by visualizations using PCA, t-SNE, and UMAP to explore data structure, and finally an analysis of metric distributions per cluster.
+* **Input:** The CSV file `normalized_metrics.csv` containing normalized visual metrics for each artwork.
+* **Methods:**
+    * **Data Loading and Preparation:**
+        * The dataset is loaded.
+        * Metric columns ("Fractal dimension", "Entropy", "Birkhoff measure", "Euclidean distance") are cleaned of any non-numeric values and converted to `float` type.
+        * An array `X` containing only the values of the four metrics for clustering is created.
+    * **Mean-Shift Clustering:**
+        * An **adaptive bandwidth** for the Mean-Shift algorithm is estimated. Bandwidth is a crucial parameter that determines the scale of cluster detection. A value of `0.39 * median_bw` is used as specified, suggesting a slightly more permissive approach to cluster definition than a pure median bandwidth.
+        * The Mean-Shift algorithm is applied to the data `X`. This algorithm does not require a predefined number of clusters and identifies them autonomously based on data point density.
+        * Cluster labels (`labels`) assigned to each data point are added to the original DataFrame in a new 'Cluster' column.
+        * The number of clusters found is printed.
+    * **Cluster Analysis and Visualization:**
+        * **Dimensionality Reduction (PCA):** Principal Component Analysis (PCA) is applied to reduce the four metric dimensions to two principal components (`X_pca`), facilitating visualization.
+        * **PCA Scatter Plot:** A scatter plot of the data projected onto PCA 1 and PCA 2 is generated, with points colored according to the cluster assigned by Mean-Shift. This plot helps visualize cluster separation in the principal component space.
+        * **Statistics per Cluster:** The means of the four metrics for each identified cluster are calculated and printed. This provides a numerical characterization of each attractor.
+        * **Bar Plots of Means per Metric and Cluster:** Separate bar plots are generated for each of the four metrics, showing the average value of that metric for each cluster. This helps understand which metrics best define each cluster.
+        * **Scaled Means Bar Plot per Metric and Cluster:** The means of the metrics for each cluster are further scaled (normalized between 0 and 1) using `MinMaxScaler`. This allows a direct comparison of the relative importance of each metric within a cluster, visualized in a single bar plot grouped by cluster and metric.
+        * **Dimensionality Reduction (t-SNE):** t-Distributed Stochastic Neighbor Embedding (t-SNE) is applied to reduce the data to two dimensions (`X_tsne`). t-SNE is particularly effective at preserving local proximity relationships and visualizing the intrinsic structure of data in high-dimensional spaces.
+        * **t-SNE Scatter Plot:** A scatter plot of the data projected by t-SNE is created, colored by cluster. This plot offers an alternative visualization to PCA, often revealing more distinct groupings if clusters have complex shapes.
+        * **Dimensionality Reduction (UMAP):** Uniform Manifold Approximation and Projection (UMAP) is applied to reduce the data to two dimensions (`embedding`). UMAP is similar to t-SNE but often faster and more suitable for large datasets, aiming to preserve both local and global structure.
+        * **UMAP Scatter Plot:** A scatter plot of the data projected by UMAP is generated, colored by cluster. This plot provides another perspective on the arrangement of clusters in the feature space.
+        * **"Fractal Dimension" Bifurcation Map per Cluster:** A stripplot is generated that visualizes the distribution of "Fractal Dimension" values for each cluster. This plot acts as a "bifurcation map," showing the spread of the metric within each attractor and the transitions between them.
 * **Output:**
-    * Il numero di cluster trovati dall'algoritmo Mean-Shift.
-    * Stampe delle statistiche medie per ogni metrica all'interno di ciascun cluster.
-    * Grafici:
-        * Scatter plot dei cluster proiettati su PCA.
-        * Quattro bar plot separati, uno per ogni metrica, mostrando i valori medi per cluster.
-        * Un bar plot unificato delle medie delle metriche per cluster (con metriche scalate).
-        * Scatter plot dei cluster proiettati su t-SNE.
-        * Scatter plot dei cluster proiettati su UMAP.
-        * Un grafico tipo "biforcazione" della Dimensione Frattale per cluster.
-* **Insights:** Questa analisi permette di identificare e caratterizzare gli "attrattori" nello stile di Picasso basati su metriche oggettive. Questi attrattori possono corrispondere o meno ai periodi stilistici tradizionali, offrendo una prospettiva data-driven sull'evoluzione del suo linguaggio visivo. I cluster rappresentano stati stabili o configurazioni morfologiche che l'artista ha esplorato. Le visualizzazioni PCA, t-SNE e UMAP aiutano a capire la separazione e la struttura di questi attrattori nello spazio delle caratteristiche, mentre l'analisi delle medie delle metriche per cluster quantifica le caratteristiche distintive di ciascun attrattore. La mappa di biforcazione della dimensione frattale (o di altre metriche) per cluster può mostrare come una metrica specifica si distribuisce all'interno di ciascun attrattore e se ci sono salti o continuità tra di essi, suggerendo punti di cambiamento o di consolidamento nello stile.
+    * The number of clusters found by the Mean-Shift algorithm.
+    * Printouts of the average statistics for each metric within each cluster.
+    * Plots:
+        * Scatter plot of clusters projected onto PCA.
+        * Four separate bar plots, one for each metric, showing average values per cluster.
+        * A unified bar plot of scaled metric averages per cluster (with scaled metrics).
+        * Scatter plot of clusters projected onto t-SNE.
+        * Scatter plot of clusters projected onto UMAP.
+        * A "bifurcation" type plot of Fractal Dimension per cluster.
+* **Insights:** This analysis allows the identification and characterization of "attractors" in Picasso's style based on objective metrics. These attractors may or may not correspond to traditional stylistic periods, offering a data-driven perspective on the evolution of his visual language. Clusters represent stable states or morphological configurations that the artist explored. PCA, t-SNE, and UMAP visualizations help understand the separation and structure of these attractors in the feature space, while the analysis of metric averages per cluster quantifies the distinctive characteristics of each attractor. The bifurcation map of fractal dimension (or other metrics) per cluster can show how a specific metric is distributed within each attractor and whether there are jumps or continuities between them, suggesting points of change or consolidation in style.
 
 ---
